@@ -14,12 +14,12 @@ using System.IO;
 using FrooxEngine.ProtoFlux.CoreNodes;
 using Renderite.Shared;
 
-namespace ResoniteGBMod
+namespace ResoniteGameStreamerMod
 {
-    public class ResoniteGBMod : ResoniteMod
+    public class ResoniteGameStreamerMod : ResoniteMod
     {
         public override string Author => "Ikubaysan";
-        public override string Name => "ResoniteGBMod";
+        public override string Name => "ResoniteGameStreamerMod";
         public override string Version => "1.0.0";
 
 
@@ -50,13 +50,13 @@ namespace ResoniteGBMod
             Config = GetConfiguration(); //Get this mods' current ModConfiguration
             UpdateCachedConfigOptions();
             Config.Save(true); //If you'd like to save the default config values to file
-            Harmony harmony = new Harmony("com.ikubaysan.ResoniteGBMod");
+            Harmony harmony = new Harmony("com.ikubaysan.ResoniteGameStreamerMod");
             harmony.PatchAll();
 
-            Debug("a debug log from ResoniteGBMod...");
-            Msg("a regular log from ResoniteGBMod...");
-            Warn("a warn log from ResoniteGBMod...");
-            Error("an error log from ResoniteGBMod...");
+            Debug("a debug log from ResoniteGameStreamerMod...");
+            Msg("a regular log from ResoniteGameStreamerMod...");
+            Warn("a warn log from ResoniteGameStreamerMod...");
+            Error("an error log from ResoniteGameStreamerMod...");
 
             if (enabledCachedConfigOption)
             {
