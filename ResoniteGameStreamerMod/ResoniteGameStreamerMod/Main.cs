@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HarmonyLib;
-using ResoniteModLoader;
-using System.Reflection;
+﻿using Elements.Core;
 using FrooxEngine;
 using FrooxEngine.UIX;
-using Elements.Core;
-using System.IO.MemoryMappedFiles;
-using System.IO;
-using FrooxEngine.ProtoFlux.CoreNodes;
+using HarmonyLib;
 using Renderite.Shared;
+using ResoniteModLoader;
+using System;
+using System.IO;
+using System.IO.MemoryMappedFiles;
 
 namespace ResoniteGameStreamerMod
 {
@@ -22,486 +16,469 @@ namespace ResoniteGameStreamerMod
         public override string Name => "ResoniteGameStreamerMod";
         public override string Version => "1.0.0";
 
+        // -------------------- Config --------------------
+        [AutoRegisterConfigKey]
+        private static readonly ModConfigurationKey<bool> ENABLED =
+            new ModConfigurationKey<bool>("enabled", "Enable mod", () => true);
 
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> ENABLED = new ModConfigurationKey<bool>("enabled", "Enable mod", () => true);
+        private static readonly ModConfigurationKey<bool> RGB_MODE =
+            new ModConfigurationKey<bool>("rgb_mode", "RGB mode (true), or Greyscale GB mode (false)", () => true);
+
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<int> CANVAS_SLOT_WIDTH = new ModConfigurationKey<int>("canvas_slot_width", "Pixel width of the canvas slot", () => 160);
+        private static readonly ModConfigurationKey<int> CANVAS_SLOT_WIDTH =
+            new ModConfigurationKey<int>("canvas_slot_width", "Pixel width of the canvas slot", () => 160);
+
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<int> CANVAS_SLOT_HEIGHT = new ModConfigurationKey<int>("canvas_slot_height", "Pixel height of the canvas slot", () => 144);
+        private static readonly ModConfigurationKey<int> CANVAS_SLOT_HEIGHT =
+            new ModConfigurationKey<int>("canvas_slot_height", "Pixel height of the canvas slot", () => 144);
+
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<string> CANVAS_SLOT_NAME = new ModConfigurationKey<string>("canvas_slot_name", "Name of the canvas slot", () => "GBUIXCanvas");
+        private static readonly ModConfigurationKey<string> CANVAS_SLOT_NAME =
+            new ModConfigurationKey<string>("canvas_slot_name", "Name of the canvas slot", () => "ResoniteGameStreamerUIXCanvasRGB");
 
-        private static ModConfiguration Config; //If you use config settings, this will be where you interface with them
+        private static ModConfiguration Config;
 
-        private static bool enabledCachedConfigOption;
-        private static int canvasSlotWidthCachedConfigOption;
-        private static int canvasSlotHeightCachedConfigOption;
-        private static string canvasSlotNameCachedConfigOption;
+        // Cached config for fast checks and to trigger reinit when changed
+        private static bool enabledCached;
+        private static bool rgbModeCached;
+        private static int canvasW;
+        private static int canvasH;
+        private static string canvasName;
 
-        private static colorX[] GameBoyColors = new colorX[4];
+        // GB palette (4 shades)
+        private static readonly colorX[] GameBoyColors = new colorX[4];
 
-        // Fixed size array for all possible RGB values
-        private static bool _allColorsInitialized = false;
-        private static bool _reInitializeNeeded = false;
+        private static bool _reInitializeNeeded;
 
         public override void OnEngineInit()
         {
-            Config = GetConfiguration(); //Get this mods' current ModConfiguration
+            Config = GetConfiguration();
             UpdateCachedConfigOptions();
-            Config.Save(true); //If you'd like to save the default config values to file
+            Config.Save(true);
+
             Harmony harmony = new Harmony("com.ikubaysan.ResoniteGameStreamerMod");
             harmony.PatchAll();
 
-            Debug("a debug log from ResoniteGameStreamerMod...");
-            Msg("a regular log from ResoniteGameStreamerMod...");
-            Warn("a warn log from ResoniteGameStreamerMod...");
-            Error("an error log from ResoniteGameStreamerMod...");
-
-            if (enabledCachedConfigOption)
-            {
-                initializeAllColors();
-            }
+            Msg("[Init] ResoniteGameStreamerMod loaded");
+            InitializeGBPalette();
         }
 
-        private static void initializeAllColors()
+        private static void InitializeGBPalette()
         {
-            Msg("Initializing all colors");
-
-            /*
-            private static readonly Color[] GameBoyColors = new Color[] {
-                Color.FromArgb(255, 255, 255), // White
-                Color.FromArgb(192, 192, 192), // Light Gray
-                Color.FromArgb(96, 96, 96),    // Dark Gray
-                Color.FromArgb(0, 0, 0)        // Black
-            };
-            */
-
+            // Keep scaling consistent with your existing mods (divide by 1000f)
             GameBoyColors[0] = new colorX(255 / 1000f, 255 / 1000f, 255 / 1000f, 1, ColorProfile.Linear); // White
             GameBoyColors[1] = new colorX(192 / 1000f, 192 / 1000f, 192 / 1000f, 1, ColorProfile.Linear); // Light Gray
-            GameBoyColors[2] = new colorX(96 / 1000f, 96 / 1000f, 96 / 1000f, 1, ColorProfile.Linear); // Dark Gray
-            GameBoyColors[3] = new colorX(0 / 1000f, 0 / 1000f, 0 / 1000f, 1, ColorProfile.Linear); // Black
-
-            _allColorsInitialized = true;
-            Msg("Finished initializing all colors");
+            GameBoyColors[2] = new colorX(96 / 1000f, 96 / 1000f, 96 / 1000f, 1, ColorProfile.Linear);    // Dark Gray
+            GameBoyColors[3] = new colorX(0 / 1000f, 0 / 1000f, 0 / 1000f, 1, ColorProfile.Linear);       // Black
         }
 
         private static void UpdateCachedConfigOptions()
         {
+            bool newEnabled = Config.GetValue(ENABLED);
+            bool newRgbMode = Config.GetValue(RGB_MODE);
+            int newW = Config.GetValue(CANVAS_SLOT_WIDTH);
+            int newH = Config.GetValue(CANVAS_SLOT_HEIGHT);
+            string newName = Config.GetValue(CANVAS_SLOT_NAME);
 
-            int newCanvasSlotWidth = Config.GetValue(CANVAS_SLOT_WIDTH);
-            int newCanvasSlotHeight = Config.GetValue(CANVAS_SLOT_HEIGHT);
-            bool dimensionsAreValid = newCanvasSlotWidth >= 100 && newCanvasSlotHeight >= 100 && newCanvasSlotWidth <= 999 && newCanvasSlotHeight <= 999;
+            bool dimsValid = newW >= 100 && newH >= 100 && newW <= 999 && newH <= 999;
 
-            if (dimensionsAreValid && newCanvasSlotWidth != canvasSlotWidthCachedConfigOption || newCanvasSlotHeight != canvasSlotHeightCachedConfigOption)
+            // Trigger reinit if any structural thing changes:
+            bool trigger =
+                (dimsValid && (newW != canvasW || newH != canvasH)) ||
+                (newRgbMode != rgbModeCached) ||
+                (newName != canvasName);
+
+            _reInitializeNeeded = trigger;
+
+            enabledCached = newEnabled;
+            if (dimsValid)
             {
-                Msg("Canvas dimensions have been modified and are valid, re-initialization of canvas is needed");
-                _reInitializeNeeded = true;
+                canvasW = newW;
+                canvasH = newH;
             }
             else
             {
-                Msg("Canvas dimensions have not been modified or are invalid, re-initialization of canvas is not needed");
-                _reInitializeNeeded = false;
+                Warn($"[Config] Invalid canvas dimensions ({newW}x{newH}). Keeping previous {canvasW}x{canvasH}.");
             }
+            rgbModeCached = newRgbMode;
+            canvasName = newName;
 
-            enabledCachedConfigOption = Config.GetValue(ENABLED);
-            if (dimensionsAreValid)
-            {
-                canvasSlotWidthCachedConfigOption = Config.GetValue(CANVAS_SLOT_WIDTH);
-                canvasSlotHeightCachedConfigOption = Config.GetValue(CANVAS_SLOT_HEIGHT);
-            }
-            else
-            {
-                Msg("Canvas dimensions are invalid, not updating canvasSlotWidthCachedConfigOption and canvasSlotHeightCachedConfigOption");
-            }
-
-            canvasSlotNameCachedConfigOption = Config.GetValue(CANVAS_SLOT_NAME);
-            Msg("Updated cached config options");
-            Msg("enabledCachedConfigOption: " + enabledCachedConfigOption);
-            Msg("canvasSlotWidthCachedConfigOption: " + canvasSlotWidthCachedConfigOption);
-            Msg("canvasSlotHeightCachedConfigOption: " + canvasSlotHeightCachedConfigOption);
-            Msg("canvasSlotNameCachedConfigOption: " + canvasSlotNameCachedConfigOption);
+            Msg($"[Config] enabled={enabledCached}, rgb_mode={rgbModeCached}, size={canvasW}x{canvasH}, slotName={canvasName}, reinit={_reInitializeNeeded}");
         }
 
-        class ReosoniteGBModPatcher
+        // -------------------- Patching --------------------
+        private const string PixelDataMMFName = "ResonitePixelData";
+        private const string ClientAckMMFName = "ResoniteClientRenderConfirmation";
+        private const int ClientAckMMFSize = sizeof(Int32);
+
+        class Patcher
         {
             private static bool initialized = false;
-            private static Canvas _latestCanvasInstance;
-            private static MemoryMappedFile _memoryMappedFile;
-            private const string MemoryMappedFileName = "ResonitePixelData";
-            private static RawGraphic[][] rawGraphicComponentCache;
-            private static HorizontalLayout[] horizontalLayoutComponentCache;
-            private static int[] readPixelData;
-            private static int readPixelDataLength = -1;
+            private static Canvas _canvas;
 
-            private const string ClientRenderConfirmationMemoryMappedFileName = "ResoniteClientRenderConfirmation";
-            private const int ClientRenderConfirmationMemoryMappedFileSize = sizeof(Int32);
-            private static MemoryMappedFile _clientRenderConfirmationMemoryMappedFile;
-            private static int latestReceivedFrameMillisecondsOffset = -1;
-            private static DateTime latestInitializationAttempt = DateTime.MinValue;
-            private static bool canvasModificationInProgress = false;
+            private static MemoryMappedFile _mmfPixel;
+            private static MemoryMappedViewStream _mmfView;
+            private static BinaryReader _reader;
 
-            public static int[] readContiguousRangePairs;
-            private static int readContiguousRangePairsLength;
+            private static MemoryMappedFile _mmfAck;
+            private static int latestFrameTick = -1;
 
-            private static MemoryMappedViewStream _memoryMappedViewStream;
-            private static BinaryReader _binaryReader;
+            private static RawGraphic[][] rgbRaw;                  // RGB mode: 1 RawGraphic per pixel
+            private static RawGraphic[][] gbRawPerColor;           // GB mode: 4 RawGraphics per pixel (flattened per row)
+            private static HorizontalLayout[] rowLayouts;
 
+            private static int[] pxData;
+            private static int pxDataLen = -1;
+            public static int[] rowPairs;
+            private static int rowPairsLen;
 
-            // OnAttach() is called whenever a new Canvas is created, but not when I spawn one from Inventory.
-            // FinishCanvasUpdate() Also hits when I grab the canvas, but it's the only method I could find to detect spawning of a canvas.
+            private static DateTime lastInitAttempt = DateTime.MinValue;
+            private static bool mutatingCanvas = false;
+
+            private static void EnsureAckMMF()
+            {
+                if (_mmfAck == null)
+                {
+                    _mmfAck = MemoryMappedFile.CreateOrOpen(ClientAckMMFName, ClientAckMMFSize);
+                    Msg("[Ack] Created/Opened client ack MMF");
+                }
+            }
+
             [HarmonyPatch(typeof(Canvas), "FinishCanvasUpdate")]
-            public static class CanvasFinishCanvasUpdatePatcher
+            public static class CanvasFinishCanvasUpdatePatch
             {
                 static void Postfix(Canvas __instance)
                 {
-                    if (!enabledCachedConfigOption) return;
+                    if (!enabledCached) return;
+                    if (__instance.Slot.Name != canvasName) return;
 
-                    if (__instance.Slot.Name != canvasSlotNameCachedConfigOption) return;
-
-                    if (__instance != _latestCanvasInstance)
+                    if (__instance != _canvas)
                     {
-                        Msg("Found a Canvas with slot name " + __instance.Slot.Name + ", and it is not the same as _latestCanvasInstance");
-                        _latestCanvasInstance = __instance;
+                        Msg($"[Canvas] Found target canvas '{__instance.Slot.Name}' (new instance).");
+                        _canvas = __instance;
                         initialized = false;
-                        Msg("Set initialized to false");
                     }
 
                     if (!initialized || _reInitializeNeeded)
                     {
-                        if ((DateTime.UtcNow - latestInitializationAttempt).TotalSeconds < 30) return;
-                        Msg("Canvas must be initialized");
+                        // Avoid thrashing on frequent updates
+                        if ((DateTime.UtcNow - lastInitAttempt).TotalSeconds < 5) return;
 
+                        lastInitAttempt = DateTime.UtcNow;
+                        Msg($"[Canvas] Initializing (rgb_mode={rgbModeCached}, size={canvasW}x{canvasH}) ...");
                         try
                         {
                             InitializeCanvas(__instance);
+                            initialized = true;
+                            _reInitializeNeeded = false;
+                            Msg("[Canvas] Initialization complete.");
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            Error("Failed to initialize canvas " + __instance.Slot.Name);
-                            Error(e.ToString());
-                            return;
+                            Error($"[Canvas] Initialization failed: {ex}");
+                            initialized = false;
                         }
-                        initialized = true;
-                        _reInitializeNeeded = false;
                     }
                 }
-                static void InitializeCanvas(Canvas __instance)
+
+                static void InitializeCanvas(Canvas cv)
                 {
-                    // Retrieve the values of configuration keys at the time the method is called
-                    int canvasSlotWidth = canvasSlotWidthCachedConfigOption;
-                    int canvasSlotHeight = canvasSlotHeightCachedConfigOption;
-                    string canvasSlotName = canvasSlotNameCachedConfigOption;
+                    // Size
+                    cv.Size.Value = new float2(canvasW, canvasH);
+                    Msg($"[Canvas] Set size to {cv.Size.Value}");
 
-                    // Slot name matches the constant
-                    Msg("Matched with the slot name: " + __instance.Slot.Name);
+                    // Locate content slot
+                    Slot background = cv.Slot.FindChild("Background");
+                    if (background == null) throw new Exception("Missing child slot 'Background'");
+                    Slot image = background.FindChild("Image");
+                    if (image == null) throw new Exception("Missing child slot 'Image'");
+                    Slot content = image.FindChild("Content");
+                    if (content == null) throw new Exception("Missing child slot 'Content'");
 
-                    __instance.Slot.GetComponent<Canvas>().Size.Value = new float2(canvasSlotWidth, canvasSlotHeight);
-                    Msg("Set the size of the canvas to: " + __instance.Slot.GetComponent<Canvas>().Size.Value);
+                    // Prepare buffers before we destroy children (so we can early-fail if MMF missing)
+                    pxData = new int[canvasW * canvasH];
+                    rowPairs = new int[canvasW * canvasH];
 
-                    Msg("Changed the slot name to: " + __instance.Slot.Name);
+                    // MMF open
+                    _mmfPixel = MemoryMappedFile.OpenExisting(PixelDataMMFName);
+                    _mmfView = _mmfPixel.CreateViewStream();
+                    _reader = new BinaryReader(_mmfView);
+                    latestFrameTick = -1;
+                    Msg($"[MMF] Opened '{PixelDataMMFName}' for reading.");
 
-                    Slot backgroundSlot = __instance.Slot.FindChild("Background");
-                    if (backgroundSlot == null)
+                    // Wipe existing row slots
+                    content.DestroyChildren();
+                    Msg("[Canvas] Cleared Content children.");
+
+                    // Build rows
+                    rowLayouts = new HorizontalLayout[canvasH];
+
+                    if (rgbModeCached)
                     {
-                        Msg("Could not find the child slot: Background");
-                        return;
-                    }
-
-                    Msg("Found the child slot: " + backgroundSlot.Name);
-
-                    Slot imageSlot = backgroundSlot.FindChild("Image");
-                    if (imageSlot == null)
-                    {
-                        Msg("Could not find the child slot: Image");
-                        return;
-                    }
-
-                    Msg("Found the child slot: " + imageSlot.Name);
-
-                    Slot contentSlot = imageSlot.FindChild("Content");
-                    if (contentSlot == null)
-                    {
-                        Msg("Could not find the child slot: Content");
-                        return;
-                    }
-
-                    Msg("Found the child slot: " + contentSlot.Name);
-
-                    // Destroying all the children is expensive, and usually if we get to this point then the next thing that could go wrong
-                    // is not being able to find the memory mapped file, so we'll attempt to find the memory mapped file first.
-                    readPixelData = new int[canvasSlotWidthCachedConfigOption * canvasSlotHeightCachedConfigOption];
-                    readContiguousRangePairs = new int[canvasSlotWidthCachedConfigOption * canvasSlotHeightCachedConfigOption];
-
-                    _memoryMappedFile = MemoryMappedFile.OpenExisting(MemoryMappedFileName);
-                    _memoryMappedViewStream = _memoryMappedFile.CreateViewStream();
-                    _binaryReader = new BinaryReader(_memoryMappedViewStream);
-                    latestReceivedFrameMillisecondsOffset = -1;
-                    Msg("_memoryMappedFile has been newly initialized with " + MemoryMappedFileName);
-
-                    // Delete all existing children of the content slot, which are HorizontalLayouts
-                    contentSlot.DestroyChildren();
-
-                    Msg("Destroyed all children of the content slot: " + contentSlot.Name);
-
-                    // Create new HorizontalLayouts according to the height constant
-                    Random rand = new Random();
-
-                    // Initialize the cache
-                    rawGraphicComponentCache = new RawGraphic[canvasSlotHeight][];
-                    horizontalLayoutComponentCache = new HorizontalLayout[canvasSlotHeight];
-
-                    // For the count of the height constant, call contentSlot.AddSlot
-                    for (int i = 0; i < canvasSlotHeight; i++)
-                    {
-                        Slot horizontalLayoutSlot = contentSlot.AddSlot("HorizontalLayout" + i);
-                        horizontalLayoutSlot.AttachComponent<RectTransform>();
-                        HorizontalLayout horizontalLayoutComponent = horizontalLayoutSlot.AttachComponent<HorizontalLayout>();
-                        horizontalLayoutComponentCache[i] = horizontalLayoutComponent;
-                        horizontalLayoutComponent.PaddingTop.Value = i;
-                        horizontalLayoutComponent.PaddingBottom.Value = canvasSlotHeight - i - 1;
-
-                        // Create new slots for each column in the horizontal layout and add them to the cache
-                        rawGraphicComponentCache[i] = new RawGraphic[canvasSlotWidth * GameBoyColors.Length];
-
-                        // Add a slot for each column in the horizontal layout (each pixel)
-                        for (int j = 0; j < canvasSlotWidth; j++)
+                        // RGB mode: 1 RawGraphic per pixel
+                        rgbRaw = new RawGraphic[canvasH][];
+                        for (int y = 0; y < canvasH; y++)
                         {
-                            Slot verticalSlot = horizontalLayoutSlot.AddSlot("VerticalSlot" + j);
-                            verticalSlot.AttachComponent<RectTransform>();
+                            Slot row = content.AddSlot($"Row{y}");
+                            row.AttachComponent<RectTransform>();
+                            var h = row.AttachComponent<HorizontalLayout>();
+                            h.PaddingTop.Value = y;
+                            h.PaddingBottom.Value = canvasH - y - 1;
+                            rowLayouts[y] = h;
 
-
-                            // Create a Raw Graphic component for each color
-
-                            for (int k = 0; k < GameBoyColors.Length; k++)
+                            rgbRaw[y] = new RawGraphic[canvasW];
+                            for (int x = 0; x < canvasW; x++)
                             {
-                                RawGraphic rawGraphicComponent = verticalSlot.AttachComponent<RawGraphic>();
-                                rawGraphicComponentCache[i][j * GameBoyColors.Length + k] = rawGraphicComponent;
-                                rawGraphicComponent.Color.Value = GameBoyColors[k];
-
-                                // Enable the 4th color (black) by default
-                                if (k == GameBoyColors.Length - 1)
-                                    rawGraphicComponent.Enabled = true;
-                                else 
-                                    rawGraphicComponent.Enabled = false;
+                                Slot p = row.AddSlot($"Px{x}");
+                                p.AttachComponent<RectTransform>();
+                                var g = p.AttachComponent<RawGraphic>();
+                                // init to black-ish to avoid bright flash
+                                g.Color.Value = new colorX(0, 0, 0, 1, ColorProfile.Linear);
+                                rgbRaw[y][x] = g;
                             }
                         }
-                    }
-                    Msg("Created new HorizontalLayouts according to the height constant: " + canvasSlotHeight);
-
-                    if (_allColorsInitialized)
-                    {
-                        Msg("All colors are already initialized");
+                        Msg("[Canvas] Built RGB canvas (1 RawGraphic per pixel).");
                     }
                     else
                     {
-                        Msg("All colors have not been initialized yet, so we must do so.");
-                        initializeAllColors();
-                    }
-
-                }
-            }
-
-
-            [HarmonyPatch(typeof(Canvas), "OnDestroy")]
-            public static class CanvasOnDestroyPatcher
-            {
-                static void Prefix(Canvas __instance)
-                {
-                    if (!enabledCachedConfigOption) return;
-
-                    if (__instance.Slot.Name != canvasSlotNameCachedConfigOption) return;
-                    Msg("OnDestroy() prefix patch called for canvas " + __instance.Slot.Name);
-
-                    // Wait for canvasModificationInProgress to be false
-                    if (canvasModificationInProgress)
-                    {
-                        Msg("canvasModificationInProgress is true, waiting for it to be false");
-                        while (canvasModificationInProgress)
+                        // GB mode: 4 RawGraphics per pixel (precolored), toggle Enabled per color index
+                        gbRawPerColor = new RawGraphic[canvasH][];
+                        for (int y = 0; y < canvasH; y++)
                         {
-                            System.Threading.Thread.Sleep(10);
-                        }
-                        Msg("canvasModificationInProgress is now false, continuing");
-                    }
-                    else
-                    {
-                        Msg("canvasModificationInProgress is false, no need to wait");
-                    }
-                    _latestCanvasInstance = null;
-                    Msg("Set _latestCanvasInstance to null");
-                    CleanupResources();
-                    Msg("Called CleanupResources()");
-                }
+                            Slot row = content.AddSlot($"Row{y}");
+                            row.AttachComponent<RectTransform>();
+                            var h = row.AttachComponent<HorizontalLayout>();
+                            h.PaddingTop.Value = y;
+                            h.PaddingBottom.Value = canvasH - y - 1;
+                            rowLayouts[y] = h;
 
-                static void CleanupResources()
-                {
-                    _binaryReader?.Dispose();
-                    _binaryReader = null;
-                    _memoryMappedViewStream?.Dispose();
-                    _memoryMappedViewStream = null;
-                    _memoryMappedFile?.Dispose();
-                    _memoryMappedFile = null;
-                }
-
-            }
-
-
-
-            [HarmonyPatch(typeof(FrooxEngine.Animator), "OnCommonUpdate")]
-            public static class AnimatorOnCommonUpdatePatcher
-            {
-                public static void Prefix()
-                {
-                    if (!initialized || _latestCanvasInstance == null || !enabledCachedConfigOption) return;
-
-                    if (readPixelDataLength == -1 && enabledCachedConfigOption)
-                    {
-                        ReadFromMemoryMappedFile();
-                        // This can happen if ReadFromMemoryMappedFile() raised an exception
-                        if (readPixelDataLength == -1) return;
-                    }
-                    try
-                    {
-                        SetPixelDataToCanvas(_latestCanvasInstance);
-                    }
-                    catch (Exception e)
-                    {
-                        // This will also hit if the canvas was deleted.
-                        Error("Failed to update frame for initialized canvas " + _latestCanvasInstance.Slot.Name);
-                        Error(e.ToString());
-                        initialized = false;
-                        Error("Set initialized to false.");
-                    }
-                    readPixelDataLength = -1;
-                    return;
-                }
-
-                static void SetPixelDataToCanvas(Canvas __instance)
-                {
-                    int i = 0;
-                    int colorIndex;
-                    int packedxStartYSpan, xStart, y, spanLength;
-                    int x, xEnd;
-                    canvasModificationInProgress = true;
-
-                    while (i < readPixelDataLength)
-                    {
-                        colorIndex = readPixelData[i++];
-                        while (i < readPixelDataLength && readPixelData[i] >= 0)
-                        {
-                            packedxStartYSpan = readPixelData[i++];
-                            xStart = (packedxStartYSpan / 1000000) % 1000;
-                            y = (packedxStartYSpan / 1000) % 1000;
-
-                            //Same as: xEnd = xStart + spanLength;
-                            xEnd = ((packedxStartYSpan / 1000000) % 1000) + (packedxStartYSpan % 1000);
-
-                            for (x = xStart; x < xEnd; x++)
+                            gbRawPerColor[y] = new RawGraphic[canvasW * 4];
+                            for (int x = 0; x < canvasW; x++)
                             {
+                                Slot p = row.AddSlot($"Px{x}");
+                                p.AttachComponent<RectTransform>();
 
-                                for (int k = 0; k < GameBoyColors.Length; k++)
+                                // create 4 pre-tinted graphics
+                                for (int k = 0; k < 4; k++)
                                 {
-                                    // Set the color of the pixel by enabling the correct RawGraphic component
-                                    if (k == colorIndex)
-                                    {
-                                        rawGraphicComponentCache[y][x * GameBoyColors.Length + k].Enabled = true;
-                                    }
-                                    else
-                                    {
-                                        rawGraphicComponentCache[y][x * GameBoyColors.Length + k].Enabled = false;
-                                    }
+                                    var g = p.AttachComponent<RawGraphic>();
+                                    g.Color.Value = GameBoyColors[k];
+                                    g.Enabled = (k == 3); // default to black (index 3)
+                                    gbRawPerColor[y][x * 4 + k] = g;
                                 }
                             }
                         }
-                        i++; // Skip the negative delimiter. We've hit a new color.
+                        Msg("[Canvas] Built GB canvas (4 RawGraphics per pixel).");
                     }
-
-                    for (i = 0; i < readContiguousRangePairsLength; i += 2)
-                    {
-                        int rowIndex = readContiguousRangePairs[i];
-                        int rowHeight = readContiguousRangePairs[i + 1];
-                        //SetRowHeight(rowIndex, rowHeight);
-                        horizontalLayoutComponentCache[rowIndex].PaddingTop.Value = rowIndex - rowHeight;
-                    }
-
-                    WriteLatestReceivedFrameMillisecondsOffsetToMemoryMappedFile();
-                    canvasModificationInProgress = false;
                 }
+            }
 
-                static void WriteLatestReceivedFrameMillisecondsOffsetToMemoryMappedFile()
+            [HarmonyPatch(typeof(Canvas), "OnDestroy")]
+            public static class CanvasOnDestroyPatch
+            {
+                static void Prefix(Canvas __instance)
                 {
-                    if (_clientRenderConfirmationMemoryMappedFile == null)
-                    {
-                        _clientRenderConfirmationMemoryMappedFile = MemoryMappedFile.CreateOrOpen(ClientRenderConfirmationMemoryMappedFileName, ClientRenderConfirmationMemoryMappedFileSize);
-                    }
-                    using (MemoryMappedViewStream stream = _clientRenderConfirmationMemoryMappedFile.CreateViewStream())
-                    using (BinaryWriter writer = new BinaryWriter(stream))
-                    {
-                        writer.Write(latestReceivedFrameMillisecondsOffset);
-                    }
+                    if (!enabledCached) return;
+                    if (__instance.Slot.Name != canvasName) return;
+
+                    Msg("[Canvas] OnDestroy detected; cleaning up resources.");
+                    Cleanup();
                 }
 
-                static void ReadFromMemoryMappedFile()
+                private static void Cleanup()
                 {
                     try
                     {
-                        if (_memoryMappedFile == null)
-                        {
-                            Error("MemoryMappedFile not initialized");
-                            readPixelDataLength = -1;
-                            return;
-                        }
-
-                        // Reset the stream position to the beginning
-                        _memoryMappedViewStream.Seek(0, SeekOrigin.Begin);
-
-                        short status = _binaryReader.ReadInt16();
-                        if (status == 0)
-                        {
-                            ////Msg("Data not ready yet");
-                            readPixelDataLength = -1;
-                            return;
-                        }
-
-                        int millisecondsOffset = _binaryReader.ReadInt32();
-                        if (millisecondsOffset == latestReceivedFrameMillisecondsOffset)
-                        {
-                            //Msg("millisecondsOffset of " + millisecondsOffset + " is the same as latestReceivedFrameMillisecondsOffset of " + latestReceivedFrameMillisecondsOffset);
-                            readPixelDataLength = -1;
-                            return;
-                        }
-
-                        latestReceivedFrameMillisecondsOffset = millisecondsOffset;
-
-                        // Read the count of contiguousRangePairs
-                        readContiguousRangePairsLength = _binaryReader.ReadInt32();
-
-                        // Now read the contiguousRangePairs, based on contiguousRangePairsCount
-                        for (int i = 0; i < readContiguousRangePairsLength; i++)
-                        {
-                            readContiguousRangePairs[i] = _binaryReader.ReadInt16();
-                        }
-
-                        readPixelDataLength = _binaryReader.ReadInt32();
-
-                        // Now read the pixel data, based on readPixelDataLength
-                        for (int i = 0; i < readPixelDataLength; i++)
-                        {
-                            readPixelData[i] = _binaryReader.ReadInt32();
-                        }
+                        // Streams/readers
+                        _reader?.Dispose(); _reader = null;
+                        _mmfView?.Dispose(); _mmfView = null;
+                        _mmfPixel?.Dispose(); _mmfPixel = null;
+                        _mmfAck?.Dispose(); _mmfAck = null;
+                        Msg("[MMF] Disposed all handles.");
                     }
                     catch (Exception ex)
                     {
-                        Error("Error reading from MemoryMappedFile: " + ex.Message);
-                        Msg($"readPixelDataLength: {readPixelDataLength}");
-                        Msg($"Length of readPixelData array: {readPixelData.Length}");
-                        readPixelDataLength = -1;
+                        Error($"[Cleanup] {ex}");
                     }
+                }
+            }
+
+            [HarmonyPatch(typeof(FrooxEngine.Animator), "OnCommonUpdate")]
+            public static class AnimatorOnCommonUpdatePatch
+            {
+                public static void Prefix()
+                {
+                    if (!initialized() || !enabledCached) return;
+
+                    // Read once per frame
+                    if (pxDataLen == -1)
+                    {
+                        ReadMMF();
+                        if (pxDataLen == -1) return; // nothing to do
+                    }
+
+                    try
+                    {
+                        ApplyToCanvas();
+                    }
+                    catch (Exception ex)
+                    {
+                        Error($"[Frame] Failed to apply frame: {ex}");
+                        setInitialized(false);
+                    }
+                    finally
+                    {
+                        pxDataLen = -1; // reset latch
+                    }
+                }
+
+                // -------------- Small helpers kept inline-friendly --------------
+                private static bool initialized() => Patcher.initialized && Patcher._canvas != null;
+                private static void setInitialized(bool v) => Patcher.initialized = v;
+
+                private static void ReadMMF()
+                {
+                    try
+                    {
+                        if (_mmfPixel == null)
+                        {
+                            Error("[MMF] Pixel MMF not initialized.");
+                            pxDataLen = -1;
+                            return;
+                        }
+
+                        // Reset to start and read header + payload
+                        _mmfView.Seek(0, SeekOrigin.Begin);
+
+                        short status = _reader.ReadInt16();
+                        if (status == 0)
+                        {
+                            // not ready
+                            pxDataLen = -1;
+                            return;
+                        }
+
+                        int tick = _reader.ReadInt32();
+                        if (tick == latestFrameTick)
+                        {
+                            // duplicate
+                            pxDataLen = -1;
+                            return;
+                        }
+
+                        latestFrameTick = tick;
+
+                        rowPairsLen = _reader.ReadInt32();
+                        for (int i = 0; i < rowPairsLen; i++)
+                            rowPairs[i] = _reader.ReadInt16();
+
+                        pxDataLen = _reader.ReadInt32();
+                        for (int i = 0; i < pxDataLen; i++)
+                            pxData[i] = _reader.ReadInt32();
+                    }
+                    catch (Exception ex)
+                    {
+                        Error($"[MMF] Read error: {ex.Message}");
+                        pxDataLen = -1;
+                    }
+                }
+
+                private static void ApplyToCanvas()
+                {
+                    mutatingCanvas = true;
+
+                    if (rgbModeCached)
+                    {
+                        // RGB path: colorKey is 24-bit RGB packed as R*65536 + G*256 + B
+                        int i = 0;
+                        while (i < pxDataLen)
+                        {
+                            int colorKey = pxData[i++];
+
+                            // Inline decode colorKey -> r,g,b in 0..255
+                            int r = colorKey / (256 * 256);
+                            int g = (colorKey / 256) % 256;
+                            int b = colorKey % 256;
+
+                            // Build colorX inline; match your previous scaling (/1000f)
+                            colorX cx = new colorX(r / 1000f, g / 1000f, b / 1000f, 1, ColorProfile.Linear);
+
+                            // Consume spans until negative delimiter
+                            while (i < pxDataLen && pxData[i] >= 0)
+                            {
+                                int packed = pxData[i++];
+
+                                // Unpack: 1,000,000 * xStart + 1,000 * y + span
+                                int xStart = (packed / 1000000) % 1000;
+                                int y = (packed / 1000) % 1000;
+                                int span = packed % 1000;
+
+                                int xEnd = xStart + span;
+
+                                // Set pixels [xStart, xEnd)
+                                RawGraphic[] row = rgbRaw[y];
+                                for (int x = xStart; x < xEnd; x++)
+                                {
+                                    row[x].Color.Value = cx;
+                                }
+                            }
+                            i++; // skip negative delimiter
+                        }
+                    }
+                    else
+                    {
+                        // GB path: colorKey is 0..3, we toggle the one RawGraphic that matches index
+                        int i = 0;
+                        while (i < pxDataLen)
+                        {
+                            int colorIdx = pxData[i++]; // 0..3
+
+                            while (i < pxDataLen && pxData[i] >= 0)
+                            {
+                                int packed = pxData[i++];
+
+                                int xStart = (packed / 1000000) % 1000;
+                                int y = (packed / 1000) % 1000;
+                                int span = packed % 1000;
+
+                                int xEnd = xStart + span;
+
+                                RawGraphic[] row = gbRawPerColor[y];
+                                for (int x = xStart; x < xEnd; x++)
+                                {
+                                    // Enable chosen index, disable others (0..3)
+                                    int baseIdx = x * 4;
+                                    for (int k = 0; k < 4; k++)
+                                        row[baseIdx + k].Enabled = (k == colorIdx);
+                                }
+                            }
+                            i++; // skip negative delimiter
+                        }
+                    }
+
+                    // Apply row height/spacing tweaks (padding hack retained)
+                    for (int j = 0; j < rowPairsLen; j += 2)
+                    {
+                        int rowIndex = rowPairs[j];
+                        int rowHeight = rowPairs[j + 1];
+                        rowLayouts[rowIndex].PaddingTop.Value = rowIndex - rowHeight;
+                    }
+
+                    // Ack to app so it can pace frames if desired
+                    EnsureAckMMF();
+                    using (var s = _mmfAck.CreateViewStream())
+                    using (var w = new BinaryWriter(s))
+                    {
+                        w.Write(latestFrameTick);
+                    }
+
+                    mutatingCanvas = false;
                 }
             }
 
             [HarmonyPatch(typeof(ResoniteModLoader.ModConfiguration), "FireConfigurationChangedEvent")]
-            public static class FireConfigurationChangedEventPatcher
+            public static class ConfigChangedPatch
             {
                 public static void Postfix()
                 {
