@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ResoniteGBApp
+namespace ResoniteGameStreamerApp
 {
     public enum ColorMode { GREYSCALE, RGB }
 

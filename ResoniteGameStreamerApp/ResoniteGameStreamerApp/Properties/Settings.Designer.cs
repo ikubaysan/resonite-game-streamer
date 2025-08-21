@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ResoniteGBApp.Properties
+namespace ResoniteGameStreamerApp.Properties
 {
 
 

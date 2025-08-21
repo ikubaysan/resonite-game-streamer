@@ -1,11 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ResoniteGBApp;
+using ResoniteGameStreamerApp;
 using System.Drawing;
 using System.Windows.Forms;
 
 
 
-namespace ResoniteGBApp.Tests
+namespace ResoniteGameStreamerApp.Tests
 {
     [TestClass]
     public class FrameDataTests

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.IO.MemoryMappedFiles;
 using System.IO;
 
-namespace ResoniteGBApp
+namespace ResoniteGameStreamerApp
 {
     public partial class MainForm : Form
     {

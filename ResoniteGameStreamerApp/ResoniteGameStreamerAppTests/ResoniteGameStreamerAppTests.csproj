@@ -8,8 +8,8 @@
     <ProjectGuid>{DEFE3FB9-1BDE-4C6D-A957-2145AAC14C51}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ResoniteGBAppTests</RootNamespace>
-    <AssemblyName>ResoniteGBAppTests</AssemblyName>
+    <RootNamespace>ResoniteGameStreamerAppTests</RootNamespace>
+    <AssemblyName>ResoniteGameStreamerAppTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -58,7 +58,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ResoniteGBApp\ResoniteGameStreamerApp.csproj">
+    <ProjectReference Include="..\ResoniteGameStreamerApp\ResoniteGameStreamerApp.csproj">
       <Project>{2ec2aee5-b143-4b59-8b2c-1d7946d2884d}</Project>
       <Name>ResoniteGameStreamerApp</Name>
     </ProjectReference>

@@ -1,4 +1,4 @@
-﻿namespace ResoniteGBApp
+﻿namespace ResoniteGameStreamerApp
 {
     partial class MainForm
     {
@@ -198,7 +198,7 @@
             // 
             this.consolePresetComboBox.FormattingEnabled = true;
             this.consolePresetComboBox.Items.AddRange(new object[] {
-            "Greyscale"});
+            "Gameboy"});
             this.consolePresetComboBox.Location = new System.Drawing.Point(3, 374);
             this.consolePresetComboBox.Name = "consolePresetComboBox";
             this.consolePresetComboBox.Size = new System.Drawing.Size(100, 21);
@@ -473,7 +473,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.tabControl1);
             this.Name = "MainForm";
-            this.Text = "Resonite GB App";
+            this.Text = "Resonite Game Streamer App";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

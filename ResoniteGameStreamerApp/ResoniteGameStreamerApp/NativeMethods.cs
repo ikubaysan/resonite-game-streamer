@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 
-namespace ResoniteGBApp
+namespace ResoniteGameStreamerApp
 {
     internal static class NativeMethods
     {
