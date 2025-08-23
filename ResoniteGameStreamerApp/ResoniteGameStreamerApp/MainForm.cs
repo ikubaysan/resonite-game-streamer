@@ -18,8 +18,8 @@ namespace ResoniteGameStreamerApp
         private Random _random;
         private int MAX_FRAME_WIDTH = 999;
         private int MAX_FRAME_HEIGHT = 999;
-        public static int FRAME_WIDTH = 160;
-        public static int FRAME_HEIGHT = 144;
+        public static int FRAME_WIDTH = 240;
+        public static int FRAME_HEIGHT = 160;
         private int TargetFramerate = 36;
 
         private int PixelDataMemoryMappedFileSize;
@@ -50,9 +50,9 @@ namespace ResoniteGameStreamerApp
             if (colorModeComboBox != null)
             {
                 colorModeComboBox.Items.Clear();
-                colorModeComboBox.Items.Add("Greyscale");
                 colorModeComboBox.Items.Add("RGB");
-                colorModeComboBox.SelectedIndex = 0; // default GB
+                colorModeComboBox.Items.Add("Greyscale");
+                colorModeComboBox.SelectedIndex = 0;
             }
         }
 
@@ -182,7 +182,7 @@ namespace ResoniteGameStreamerApp
 
         private void borderWidthTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (int.TryParse(borderWidthTextBox.Text, out int selectedBorderWidth) && selectedBorderWidth >= 1)
+            if (int.TryParse(borderWidthTextBox.Text, out int selectedBorderWidth))
                 borderWidth = selectedBorderWidth;
         }
 
