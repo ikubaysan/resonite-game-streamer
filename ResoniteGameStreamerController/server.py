@@ -52,6 +52,9 @@ def on_message(client, server, message):
         print(f"Invalid message '{message}'")
         return
 
+    # Everything after the first two characters is a timestamp (optional)
+    timestamp_int = int(message[2:]) if len(message) > 2 else None
+
     # Unknown button guard
     if btn_name not in BUTTON_MAP:
         print(f"Unknown button {btn_name}")
