@@ -57,13 +57,13 @@ def on_message(client, server, message):
         print(f"Unknown button {btn_name}")
         return
 
-    # ---- Special case: can't have 'x' and 'y' pressed at the same time.
-    # EXACT requirement: if 'x' is currently pressed, ignore any attempt to press 'y'.
+    # ---- Special case: can't have 'b' and 'y' pressed at the same time. (Select and Start)
+    # if 'b' is currently pressed, ignore any attempt to press 'y'.
     # (We still allow 'y0' releases to pass through.)
     # May want to change this if playing a game where I need to press both at the same time.
-    if btn_name == "y" and action != 0 and button_state.get("x", 0) == 1:
-        print("Ignoring 'y' press because 'x' is currently pressed.")
-        server.send_message(client, f"Ignored: {message} (x held)")
+    if btn_name == "b" and action != 0 and button_state.get("y", 0) == 1:
+        print("Ignoring 'b' press because 'y' is currently pressed.")
+        server.send_message(client, f"Ignored: {message} (y held)")
         return
 
     # Process normal logic (including D-pad exclusivity)
