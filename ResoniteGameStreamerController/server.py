@@ -66,6 +66,11 @@ def on_message(client, server, message):
         server.send_message(client, f"Ignored: {message} (y held)")
         return
 
+    if btn_name == "y" and action != 0 and button_state.get("b", 0) == 1:
+        print("Ignoring 'y' press because 'b' is currently pressed.")
+        server.send_message(client, f"Ignored: {message} (b held)")
+        return
+
     # Process normal logic (including D-pad exclusivity)
     if action == 0:
         # Release logic
