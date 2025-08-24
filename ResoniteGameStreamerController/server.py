@@ -52,9 +52,6 @@ def on_message(client, server, message):
         print(f"Invalid message '{message}'")
         return
 
-    # Everything after the first two characters is a timestamp (optional)
-    timestamp_int = int(message[2:]) if len(message) > 2 else None
-
     # Unknown button guard
     if btn_name not in BUTTON_MAP:
         print(f"Unknown button {btn_name}")
@@ -72,6 +69,10 @@ def on_message(client, server, message):
     if btn_name == "y" and action != 0 and button_state.get("b", 0) == 1:
         print("Ignoring 'y' press because 'b' is currently pressed.")
         server.send_message(client, f"Ignored: {message} (b held)")
+        return
+
+    if btn_name == "b":
+        print("Button 'b' (select) was pressed but is temporarily disabled")
         return
 
     # Process normal logic (including D-pad exclusivity)
