@@ -1,4 +1,5 @@
-﻿using Elements.Core;
+﻿// StreamerConfig.cs
+using Elements.Core;
 using Renderite.Shared;
 using ResoniteModLoader;
 
@@ -6,17 +7,16 @@ namespace ResoniteGameStreamerMod
 {
     internal static class StreamerConfig
     {
-        // Cached, read by patches & helpers
         internal static bool Enabled;
         internal static bool RgbMode;
         internal static int CanvasW;
         internal static int CanvasH;
         internal static string CanvasName;
 
-        // Re-init flag observed by patches
+        internal static int MaxPixelsPerUpdate = 10000;
+
         internal static bool ReInitializeNeeded;
 
-        // Game Boy 4-shade palette (linear)
         internal static readonly colorX[] GB = new colorX[4];
 
         internal static void InitializeGBPalette()
@@ -39,6 +39,10 @@ namespace ResoniteGameStreamerMod
             int newW = cfg.GetValue(ResoniteGameStreamerMod.CANVAS_SLOT_WIDTH);
             int newH = cfg.GetValue(ResoniteGameStreamerMod.CANVAS_SLOT_HEIGHT);
             string newName = cfg.GetValue(ResoniteGameStreamerMod.CANVAS_SLOT_NAME);
+            int newMax = cfg.GetValue(ResoniteGameStreamerMod.MAX_PIXELS_PER_UPDATE);
+
+            if (newMax < 1000) newMax = 1000; // small safety floor
+            MaxPixelsPerUpdate = newMax;
 
             bool dimsValid = newW is >= 100 and <= 999 && newH is >= 100 and <= 999;
 
@@ -58,12 +62,12 @@ namespace ResoniteGameStreamerMod
             }
             else
             {
-                ResoniteGameStreamerMod.Warn($"[Config] Invalid canvas dimensions ({newW}x{newH}). Keeping previous {CanvasW}x{CanvasH}.");
+                ResoniteGameStreamerMod.LogWarn($"[Config] Invalid canvas dimensions ({newW}x{newH}). Keeping previous {CanvasW}x{CanvasH}.");
             }
             RgbMode = newRgb;
             CanvasName = newName;
 
-            ResoniteGameStreamerMod.Msg($"[Config] enabled={Enabled}, rgb_mode={RgbMode}, size={CanvasW}x{CanvasH}, slotName={CanvasName}, reinit={ReInitializeNeeded}");
+            ResoniteGameStreamerMod.LogMsg($"[Config] enabled={Enabled}, rgb_mode={RgbMode}, size={CanvasW}x{CanvasH}, slotName={CanvasName}, maxPerUpdate={MaxPixelsPerUpdate}, reinit={ReInitializeNeeded}");
         }
     }
 }

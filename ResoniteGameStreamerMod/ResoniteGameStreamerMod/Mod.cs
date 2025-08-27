@@ -31,6 +31,11 @@ namespace ResoniteGameStreamerMod
         internal static readonly ModConfigurationKey<string> CANVAS_SLOT_NAME =
             new("canvas_slot_name", "Name of the canvas slot", () => "ResoniteGameStreamerUIXCanvasRGB");
 
+        // NEW: throttle per Resonite update (pixels)
+        [AutoRegisterConfigKey]
+        internal static readonly ModConfigurationKey<int> MAX_PIXELS_PER_UPDATE =
+            new("max_pixels_per_update", "Max pixels to apply per Resonite update (chunking)", () => 10000);
+
         internal static ModConfiguration Config;
 
         public override void OnEngineInit()

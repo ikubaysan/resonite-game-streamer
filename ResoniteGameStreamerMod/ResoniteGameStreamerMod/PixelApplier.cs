@@ -1,4 +1,5 @@
-﻿using Elements.Core;
+﻿// PixelApplier.cs
+using Elements.Core;
 using FrooxEngine.UIX;
 using Renderite.Shared;
 
@@ -6,113 +7,200 @@ namespace ResoniteGameStreamerMod
 {
     internal static class PixelApplier
     {
-        internal static void ApplyCurrentFrame()
+        /// <summary>
+        /// Apply up to StreamerConfig.MaxPixelsPerUpdate pixels of the current frame.
+        /// Returns true if the frame is fully applied this call; false if more remains.
+        /// </summary>
+        internal static bool ApplyFrameChunk()
         {
             RuntimeState.MutatingCanvas = true;
 
+            int budget = StreamerConfig.MaxPixelsPerUpdate;
+            int applied = 0;
+
             if (StreamerConfig.RgbMode)
-                ApplyRGB();
+                applied = ApplyRGBChunk(budget);
             else
-                ApplyGB();
+                applied = ApplyGreyscaleChunk(budget);
 
-            // Apply row height/spacing tweaks (padding hack retained)
-            for (int j = 0; j < RuntimeState.RowPairsLen; j += 2)
+            bool finished = RuntimeState.PxCursor >= RuntimeState.PxDataLen;
+
+            // Only when the WHOLE frame is done: apply row tweaks + ack
+            if (finished)
             {
-                int rowIndex = RuntimeState.RowPairs[j];
-                int rowHeight = RuntimeState.RowPairs[j + 1];
-                RuntimeState.RowLayouts[rowIndex].PaddingTop.Value = rowIndex - rowHeight;
-            }
-
-            MmfIO.AckTick();
-            RuntimeState.MutatingCanvas = false;
-        }
-
-        private static void ApplyRGB()
-        {
-            int i = 0;
-
-            // local reference (slightly faster than repeated static access)
-            var cache = RuntimeState.RgbColorCache;
-
-            while (i < RuntimeState.PxDataLen)
-            {
-                int colorKey = RuntimeState.PxData[i++];
-
-                // ----- memoized colorX lookup -----
-                // Average-case O(1). First time we see a colorKey we construct once.
-                if (!cache.TryGetValue(colorKey, out colorX cx))
+                // Apply row height/spacing tweaks once per completed frame
+                for (int j = 0; j < RuntimeState.RowPairsLen; j += 2)
                 {
-                    // Decode packed RGB (R<<16 | G<<8 | B) using bit-ops (faster than / and %).
-                    int r = (colorKey >> 16) & 0xFF;
-                    int g = (colorKey >> 8) & 0xFF;
-                    int b = colorKey & 0xFF;
-
-                    // Keep your existing 0..255 -> 0..0.255 scaling for consistency with the rest of the mod.
-                    cx = new colorX(r / 1000f, g / 1000f, b / 1000f, 1, ColorProfile.Linear);
-                    cache[colorKey] = cx;
+                    int rowIndex = RuntimeState.RowPairs[j];
+                    int rowHeight = RuntimeState.RowPairs[j + 1];
+                    RuntimeState.RowLayouts[rowIndex].PaddingTop.Value = rowIndex - rowHeight;
                 }
 
+                MmfIO.AckTick();
+                RuntimeState.MutatingCanvas = false;
+                RuntimeState.EndFrameChunking();
+                return true;
+            }
 
-                /*
-                Original code before caching of colorXes was:
+            RuntimeState.MutatingCanvas = false;
+            return false;
+        }
 
-                int colorKey = RuntimeState.PxData[i++];
-                // decode packed RGB: R*65536 + G*256 + B
-                int r = colorKey / (256 * 256);
-                int g = (colorKey / 256) % 256;
-                int b = colorKey % 256;
-                var cx = new colorX(r / 1000f, g / 1000f, b / 1000f, 1, ColorProfile.Linear);
-                 */
+        private static int ApplyRGBChunk(int budget)
+        {
+            int used = 0;
+            var data = RuntimeState.PxData;
+            int len = RuntimeState.PxDataLen;
+            int i = RuntimeState.PxCursor;
+            var cache = RuntimeState.RgbColorCache;
 
-                // ----- apply spans for this color -----
-                while (i < RuntimeState.PxDataLen && RuntimeState.PxData[i] >= 0)
+            while (i < len && used < budget)
+            {
+                // 1) Ensure we have a current color
+                if (!RuntimeState.RgbHasCurrentColor)
                 {
-                    int packed = RuntimeState.PxData[i++];
+                    int colorKey = data[i++];
 
-                    // packed = xStart*1_000_000 + y*1_000 + span, where each field is 0..999
+                    if (!cache.TryGetValue(colorKey, out colorX cx))
+                    {
+                        int r = (colorKey >> 16) & 0xFF;
+                        int g = (colorKey >> 8) & 0xFF;
+                        int b = colorKey & 0xFF;
+                        cx = new colorX(r / 1000f, g / 1000f, b / 1000f, 1, ColorProfile.Linear);
+                        cache[colorKey] = cx;
+                    }
+
+                    RuntimeState.RgbCurrentColor = cx;
+                    RuntimeState.RgbHasCurrentColor = true;
+                    RuntimeState.RgbSpanActive = false; // need to pull first span next
+                }
+
+                // 2) If no active span, fetch next (or consume delimiter)
+                if (!RuntimeState.RgbSpanActive)
+                {
+                    if (i >= len) break;
+
+                    int next = data[i];
+                    if (next < 0)
+                    {
+                        // end-of-color delimiter
+                        i++; // consume delimiter
+                        RuntimeState.RgbHasCurrentColor = false;
+                        continue; // will read next colorKey
+                    }
+
+                    // parse packed span
+                    int packed = data[i++];
                     int xStart = (packed / 1_000_000) % 1_000;
                     int y = (packed / 1_000) % 1_000;
                     int span = packed % 1_000;
 
-                    RawGraphic[] row = RuntimeState.RgbRows[y];
-                    int xEnd = xStart + span;
-
-                    // Tight inner loop: only pointer chasing + field set, no allocations.
-                    for (int x = xStart; x < xEnd; x++)
-                        row[x].Color.Value = cx;
+                    RuntimeState.RgbX = xStart;
+                    RuntimeState.RgbY = y;
+                    RuntimeState.RgbRemaining = span;
+                    RuntimeState.RgbSpanActive = true;
                 }
 
-                i++; // skip negative delimiter
-            }
-        }
-
-
-        private static void ApplyGB()
-        {
-            int i = 0;
-            while (i < RuntimeState.PxDataLen)
-            {
-                int colorIdx = RuntimeState.PxData[i++]; // 0..3
-
-                while (i < RuntimeState.PxDataLen && RuntimeState.PxData[i] >= 0)
+                // 3) Apply pixels of the current active span, up to budget
                 {
-                    int packed = RuntimeState.PxData[i++];
+                    RawGraphic[] row = RuntimeState.RgbRows[RuntimeState.RgbY];
+                    int canDo = System.Math.Min(RuntimeState.RgbRemaining, budget - used);
+                    int x = RuntimeState.RgbX;
+                    int xEnd = x + canDo;
+                    var color = RuntimeState.RgbCurrentColor;
 
-                    int xStart = (packed / 1000000) % 1000;
-                    int y = (packed / 1000) % 1000;
-                    int span = packed % 1000;
+                    for (; x < xEnd; x++)
+                        row[x].Color.Value = color;
 
-                    int xEnd = xStart + span;
-                    RawGraphic[] row = RuntimeState.GbRowsPerColor[y];
-                    for (int x = xStart; x < xEnd; x++)
+                    used += canDo;
+                    RuntimeState.RgbX += canDo;
+                    RuntimeState.RgbRemaining -= canDo;
+
+                    if (RuntimeState.RgbRemaining == 0)
                     {
-                        int baseIdx = x * 4;
-                        for (int k = 0; k < 4; k++)
-                            row[baseIdx + k].Enabled = (k == colorIdx);
+                        RuntimeState.RgbSpanActive = false; // fetch next span or delimiter
                     }
                 }
-                i++; // skip negative delimiter
             }
+
+            RuntimeState.PxCursor = i;
+            return used;
+        }
+
+        private static int ApplyGreyscaleChunk(int budget)
+        {
+            int used = 0;
+            var data = RuntimeState.PxData;
+            int len = RuntimeState.PxDataLen;
+            int i = RuntimeState.PxCursor;
+
+            while (i < len && used < budget)
+            {
+                // 1) Ensure we have current GB shade index
+                if (!RuntimeState.GbHasCurrentIndex)
+                {
+                    if (i >= len) break;
+                    RuntimeState.GbCurrentIndex = data[i++]; // 0..3
+                    RuntimeState.GbHasCurrentIndex = true;
+                    RuntimeState.GbSpanActive = false;
+                }
+
+                // 2) If no active span, fetch next (or delimiter)
+                if (!RuntimeState.GbSpanActive)
+                {
+                    if (i >= len) break;
+
+                    int next = data[i];
+                    if (next < 0)
+                    {
+                        i++; // consume delimiter
+                        RuntimeState.GbHasCurrentIndex = false;
+                        continue; // next shade index
+                    }
+
+                    int packed = data[i++];
+                    int xStart = (packed / 1_000_000) % 1_000;
+                    int y = (packed / 1_000) % 1_000;
+                    int span = packed % 1_000;
+
+                    RuntimeState.GbX = xStart;
+                    RuntimeState.GbY = y;
+                    RuntimeState.GbRemaining = span;
+                    RuntimeState.GbSpanActive = true;
+                }
+
+                // 3) Apply pixels of the current GB span
+                {
+                    RawGraphic[] row = RuntimeState.GbRowsPerColor[RuntimeState.GbY];
+                    int idx = RuntimeState.GbCurrentIndex;
+
+                    int canDo = System.Math.Min(RuntimeState.GbRemaining, budget - used);
+                    int x = RuntimeState.GbX;
+                    int xEnd = x + canDo;
+
+                    for (; x < xEnd; x++)
+                    {
+                        int baseIdx = x * 4;
+                        // enable only the chosen shade index
+                        row[baseIdx + 0].Enabled = (0 == idx);
+                        row[baseIdx + 1].Enabled = (1 == idx);
+                        row[baseIdx + 2].Enabled = (2 == idx);
+                        row[baseIdx + 3].Enabled = (3 == idx);
+                    }
+
+                    used += canDo;
+                    RuntimeState.GbX += canDo;
+                    RuntimeState.GbRemaining -= canDo;
+
+                    if (RuntimeState.GbRemaining == 0)
+                    {
+                        RuntimeState.GbSpanActive = false;
+                    }
+                }
+            }
+
+            RuntimeState.PxCursor = i;
+            return used;
         }
     }
 }

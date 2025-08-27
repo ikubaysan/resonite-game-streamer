@@ -1,4 +1,5 @@
-﻿using Elements.Core;
+﻿// RuntimeState.cs
+using Elements.Core;
 using FrooxEngine;
 using FrooxEngine.UIX;
 using System;
@@ -10,42 +11,69 @@ namespace ResoniteGameStreamerMod
 {
     internal static class RuntimeState
     {
-        // MMF names & sizes
         internal const string PixelDataMMFName = "ResonitePixelData";
         internal const string ClientAckMMFName = "ResoniteClientRenderConfirmation";
         internal const int ClientAckMMFSize = sizeof(Int32);
 
-        // Canvas & construction artifacts
         internal static Canvas Canvas;
         internal static HorizontalLayout[] RowLayouts;
 
-        // RGB path
         internal static RawGraphic[][] RgbRows;
-
-        // GB path (4 graphics per pixel)
         internal static RawGraphic[][] GbRowsPerColor;
 
-        // Frame buffers
         internal static int[] PxData;
         internal static int PxDataLen = -1;
         internal static int[] RowPairs;
         internal static int RowPairsLen = 0;
 
-        // MMF handles
         internal static MemoryMappedFile MmfPixel;
         internal static MemoryMappedViewStream MmfView;
         internal static BinaryReader Reader;
         internal static MemoryMappedFile MmfAck;
 
-        // Frame tracking
         internal static int LatestFrameTick = -1;
 
-        // Control flags / guards
         internal static bool Initialized = false;
         internal static bool MutatingCanvas = false;
         internal static DateTime LastInitAttempt = DateTime.MinValue;
 
         internal static Dictionary<int, colorX> RgbColorCache = new(8192);
+
+        // -------- Progressive application state (persists across updates) --------
+        internal static bool FrameInProgress = false;   // true while we are chunking through a frame
+        internal static int PxCursor = 0;               // position in PxData
+
+        // RGB sub-state
+        internal static bool RgbHasCurrentColor = false;
+        internal static colorX RgbCurrentColor;
+        internal static bool RgbSpanActive = false;
+        internal static int RgbX = 0, RgbY = 0, RgbRemaining = 0;
+
+        // GB sub-state
+        internal static bool GbHasCurrentIndex = false; // color index header read
+        internal static int GbCurrentIndex = 0;
+        internal static bool GbSpanActive = false;
+        internal static int GbX = 0, GbY = 0, GbRemaining = 0;
+
+        internal static void BeginFrameChunking()
+        {
+            FrameInProgress = true;
+            PxCursor = 0;
+            RgbHasCurrentColor = false;
+            RgbSpanActive = false;
+            GbHasCurrentIndex = false;
+            GbSpanActive = false;
+        }
+
+        internal static void EndFrameChunking()
+        {
+            FrameInProgress = false;
+            PxCursor = 0;
+            RgbHasCurrentColor = false;
+            RgbSpanActive = false;
+            GbHasCurrentIndex = false;
+            GbSpanActive = false;
+        }
 
         internal static void ResetFrameLatch() => PxDataLen = -1;
 
@@ -58,11 +86,12 @@ namespace ResoniteGameStreamerMod
                 MmfPixel?.Dispose(); MmfPixel = null;
                 MmfAck?.Dispose(); MmfAck = null;
                 RgbColorCache.Clear();
-                ResoniteGameStreamerMod.Msg("[MMF] Disposed all handles.");
+                EndFrameChunking();
+                ResoniteGameStreamerMod.LogMsg("[MMF] Disposed all handles.");
             }
             catch (Exception ex)
             {
-                ResoniteGameStreamerMod.Error($"[Cleanup] {ex}");
+                ResoniteGameStreamerMod.LogError($"[Cleanup] {ex}");
             }
         }
     }

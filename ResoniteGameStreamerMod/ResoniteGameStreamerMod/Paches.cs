@@ -1,12 +1,11 @@
-﻿using FrooxEngine;
+﻿// Paches.cs
+using FrooxEngine;
 using FrooxEngine.UIX;
 using HarmonyLib;
 using System;
 
 namespace ResoniteGameStreamerMod
 {
-    // All Harmony patches are free-standing classes now.
-    // They call into CanvasBuilder, MmfIO, PixelApplier, and read StreamerConfig/RuntimeState.
     [HarmonyPatch]
     internal static class CanvasFinishUpdatePatch
     {
@@ -71,23 +70,34 @@ namespace ResoniteGameStreamerMod
             if (!StreamerConfig.Enabled) return;
             if (!RuntimeState.Initialized || RuntimeState.Canvas == null) return;
 
-            if (RuntimeState.PxDataLen == -1)
+            // If we're not in the middle of a frame, try to read a new one
+            if (!RuntimeState.FrameInProgress)
             {
-                MmfIO.ReadFrameIfAvailable();
-                if (RuntimeState.PxDataLen == -1) return;
+                if (RuntimeState.PxDataLen == -1)
+                {
+                    MmfIO.ReadFrameIfAvailable();
+                    if (RuntimeState.PxDataLen == -1) return; // nothing new yet
+                }
+
+                // We have a fresh frame in PxData; start chunking it
+                RuntimeState.BeginFrameChunking();
             }
 
             try
             {
-                PixelApplier.ApplyCurrentFrame();
+                bool finished = PixelApplier.ApplyFrameChunk();
+                if (finished)
+                {
+                    // We only reset/clear after ack was sent inside ApplyFrameChunk()
+                    RuntimeState.ResetFrameLatch();
+                }
+                // else: leave state as-is; we'll continue next OnCommonUpdate
             }
             catch (Exception ex)
             {
-                ResoniteGameStreamerMod.Error($"[Frame] Failed to apply frame: {ex}");
+                ResoniteGameStreamerMod.Error($"[Frame] Failed to apply (chunk): {ex}");
                 RuntimeState.Initialized = false;
-            }
-            finally
-            {
+                RuntimeState.EndFrameChunking(); // fail-safe
                 RuntimeState.ResetFrameLatch();
             }
         }
