@@ -34,3 +34,5 @@
 /ResoniteGameStreamerApp/ResoniteGBApp/obj/Debug
 /ResoniteGameStreamerMod/ResoniteGBMod/bin/Debug
 /ResoniteGameStreamerMod/ResoniteGBMod/obj
+/ResoniteGameStreamerApp/ResoniteGameStreamerAppTests/bin/Release/net9.0-windows
+/ResoniteGameStreamerApp/ResoniteGameStreamerAppTests/obj/Release/net9.0-windows
