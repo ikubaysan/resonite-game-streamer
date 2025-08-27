@@ -166,7 +166,6 @@ namespace ResoniteGameStreamerApp
                 g.CopyFromScreen(adjustedLeft, adjustedTop, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
             }
 
-            // ✅ Only quantize when in GB mode
             if (ActiveColorMode == ColorMode.GREYSCALE)
             {
                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),

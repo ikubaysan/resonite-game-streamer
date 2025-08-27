@@ -1,8 +1,10 @@
-﻿using System;
-using System.IO;
-using System.IO.MemoryMappedFiles;
+﻿using Elements.Core;
 using FrooxEngine;
 using FrooxEngine.UIX;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.MemoryMappedFiles;
 
 namespace ResoniteGameStreamerMod
 {
@@ -43,6 +45,8 @@ namespace ResoniteGameStreamerMod
         internal static bool MutatingCanvas = false;
         internal static DateTime LastInitAttempt = DateTime.MinValue;
 
+        internal static Dictionary<int, colorX> RgbColorCache = new(8192);
+
         internal static void ResetFrameLatch() => PxDataLen = -1;
 
         internal static void DisposeAll()
@@ -53,6 +57,7 @@ namespace ResoniteGameStreamerMod
                 MmfView?.Dispose(); MmfView = null;
                 MmfPixel?.Dispose(); MmfPixel = null;
                 MmfAck?.Dispose(); MmfAck = null;
+                RgbColorCache.Clear();
                 ResoniteGameStreamerMod.Msg("[MMF] Disposed all handles.");
             }
             catch (Exception ex)
