@@ -13,7 +13,7 @@ namespace ResoniteGameStreamerMod
         internal static int CanvasH;
         internal static string CanvasName;
 
-        internal static int MaxPixelsPerUpdate = 10000;
+        internal static int MaxPixelsPerUpdate = 20000;
 
         internal static bool ReInitializeNeeded;
 

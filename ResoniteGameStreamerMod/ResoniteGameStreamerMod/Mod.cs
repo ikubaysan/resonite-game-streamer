@@ -34,7 +34,7 @@ namespace ResoniteGameStreamerMod
         // NEW: throttle per Resonite update (pixels)
         [AutoRegisterConfigKey]
         internal static readonly ModConfigurationKey<int> MAX_PIXELS_PER_UPDATE =
-            new("max_pixels_per_update", "Max pixels to apply per Resonite update (chunking)", () => 10000);
+            new("max_pixels_per_update", "Max pixels to apply per Resonite update (chunking)", () => 20000);
 
         internal static ModConfiguration Config;
 
