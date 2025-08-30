@@ -1,0 +1,8 @@
+{
+  "disabled_buttons": ["b"],
+  "mutual_exclusions": [
+    { "block": "b", "while": "y" },
+    { "block": "y", "while": "b" }
+  ]
+}
+x
