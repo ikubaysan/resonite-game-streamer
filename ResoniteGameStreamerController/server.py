@@ -4,6 +4,7 @@ WebSocket -> vJoy bridge with optional JSON "profile" rules.
 Directional inputs now drive vJoy X/Y axes (not buttons, not POV).
 
 - Messages are two-char pairs like "a1", "u0"; batches like "a1u1x0" are fine.
+- Also accepts axis messages like "[0.543; -0.295]" (x; y) or "[0.543, -0.295]".
 - U/D/L/R map to axes via pyvjoy.VJoyDevice.set_axis(HID_USAGE_X/Y, value)
 """
 
@@ -39,6 +40,9 @@ AXIS_Y = pyvjoy.HID_USAGE_Y
 AXIS_MIN = 0x0000
 AXIS_MID = 0x4000
 AXIS_MAX = 0x8000
+
+# Float comparisons: treat very small values as zero when parsing [x; y]
+EPS_ZERO = 1e-6
 
 # ------------------------------ Profiles & Rules ------------------------------
 
@@ -224,6 +228,8 @@ class VJoyWebSocketBridge:
     - Accepts messages as two-character pairs: <button><0|1>
       e.g. "a1" (press A), "y0" (release Y).
     - Also supports concatenated pairs in one message: e.g. "a1y1u0".
+    - NEW: Accepts axis messages like "[x; y]" or "[x, y]" where x,y are floats in [-1,1].
+           Sign determines active directions (diagonals supported).
     """
     def __init__(self, host: str, port: int, profile: Optional[InputProfile]) -> None:
         self.host = host
@@ -253,6 +259,18 @@ class VJoyWebSocketBridge:
     def _on_message(self, client: dict, server: WebsocketServer, message: str) -> None:
         print(f"Received '{message}' from Client({client['id']})")
 
+        # First: bracketed vector form like "[0.543; -0.295]"
+        if self._looks_like_axis_vector(message):
+            parsed = self._parse_axis_vector(message)
+            if parsed is None:
+                print(f"Ignoring invalid vector message '{message}' (failed to parse)")
+                return
+            x, y = parsed
+            self._apply_axis_vector(client, server, x, y)
+            server.send_message(client, f"Received vector: x={x:.6f}, y={y:.6f}")
+            return
+
+        # Otherwise: fall back to two-char pairs
         pairs = self._parse_pairs(message)
         if not pairs:
             print(f"Ignoring invalid message '{message}'")
@@ -266,7 +284,77 @@ class VJoyWebSocketBridge:
 
         server.send_message(client, f"Received: {message}")
 
-    # ------------- Helpers -------------
+    # ------------- Helpers: bracketed axis parsing -------------
+
+    @staticmethod
+    def _looks_like_axis_vector(msg: str) -> bool:
+        # Identify by starting with '[' and ending with ']'
+        return len(msg) >= 5 and msg[0] == "[" and msg[-1] == "]"
+
+    @staticmethod
+    def _parse_axis_vector(msg: str) -> Optional[Tuple[float, float]]:
+        """
+        Accepts variants like:
+          "[0.5; -0.25]"
+          "[ 0.5 , -0.25 ]"
+          "[0;0]"
+        Returns (x, y) or None if invalid.
+        """
+        try:
+            body = msg[1:-1].strip()
+            # normalize separators to ';'
+            body = body.replace(",", ";")
+            parts = [p.strip() for p in body.split(";") if p.strip() != ""]
+            if len(parts) != 2:
+                return None
+            x = float(parts[0])
+            y = float(parts[1])
+            return (x, y)
+        except Exception:
+            return None
+
+    def _apply_axis_vector(self, client: dict, server: WebsocketServer, x: float, y: float) -> None:
+        """
+        Apply axis sign → direction states:
+          x > 0 => right=1, left=0
+          x < 0 => left=1,  right=0
+          x == 0 => left=0, right=0
+          (same for y with up/down)
+        """
+        # Decide desired directional states using sign with tiny epsilon for 'zero'
+        def sgn(v: float) -> int:
+            if v > EPS_ZERO:
+                return 1
+            if v < -EPS_ZERO:
+                return -1
+            return 0
+
+        sx = sgn(x)
+        sy = sgn(y)
+
+        desired: Dict[str, int] = {
+            "l": 1 if sx < 0 else 0,
+            "r": 1 if sx > 0 else 0,
+            "u": 1 if sy > 0 else 0,
+            "d": 1 if sy < 0 else 0,
+        }
+
+        # Pretty print what we're doing
+        active = [k for k, v in desired.items() if v == 1]
+        if active:
+            print(f"[vector] x={x:.6f}, y={y:.6f} → activate {', '.join(active)}; neutralize others")
+        else:
+            print(f"[vector] x={x:.6f}, y={y:.6f} → all neutral")
+
+        # Route via the same per-button path so profile rules still apply
+        # (process all four directions every time to keep state consistent)
+        for dir_name in ("l", "r", "u", "d"):
+            self._handle_one(client, server, dir_name, desired[dir_name])
+
+        # Evaluate combos after applying vector-driven directions
+        self._apply_combos()
+
+    # ------------- Helpers: pair parsing -------------
 
     def _parse_pairs(self, msg: str) -> List[Tuple[str, int]]:
         pairs: List[Tuple[str, int]] = []
