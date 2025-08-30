@@ -175,6 +175,20 @@ class VJoyController:
             return
 
         if pressed:
+            # --- enforce exclusivity per axis: pressing one releases the opposite ---
+            if name in ("l", "r"):
+                opposite = "r" if name == "l" else "l"
+                if opposite in self._held:
+                    self._held.discard(opposite)
+                    self._horiz_hist = [h for h in self._horiz_hist if h != opposite]
+                    self.state[opposite] = 0
+            else:  # ("u", "d")
+                opposite = "d" if name == "u" else "u"
+                if opposite in self._held:
+                    self._held.discard(opposite)
+                    self._vert_hist = [v for v in self._vert_hist if v != opposite]
+                    self.state[opposite] = 0
+            # now record this press
             self._held.add(name)
             if name in ("l", "r"):
                 self._horiz_hist.append(name)
@@ -182,6 +196,7 @@ class VJoyController:
                 self._vert_hist.append(name)
             self.state[name] = 1
         else:
+            # release path unchanged
             self._held.discard(name)
             if name in ("l", "r"):
                 self._horiz_hist = [h for h in self._horiz_hist if h != name]
