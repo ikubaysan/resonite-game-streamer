@@ -11,7 +11,9 @@ KEY_MAP = {
     "z": "a",
     "x": "b",
     "c": "x",
-    "v": "y"
+    "v": "y",
+    "b": "j",
+    "n": "k"
 }
 
 button_states = {key: False for key in KEY_MAP.keys()}
