@@ -28,459 +28,498 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.targetWindowTextBox = new System.Windows.Forms.TextBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.button1 = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.colorModeLabel = new System.Windows.Forms.Label();
-            this.colorModeComboBox = new System.Windows.Forms.ComboBox();
-            this.consolePresetComboBox = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.canvasWidthLabel = new System.Windows.Forms.Label();
-            this.canvasWidthTextBox = new System.Windows.Forms.TextBox();
-            this.canvasHeightLabel = new System.Windows.Forms.Label();
-            this.canvasHeightTextBox = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.borderWidthTextBox = new System.Windows.Forms.TextBox();
-            this.previewPixelsChangedCountLabel = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.rowExpansionCheckBox = new System.Windows.Forms.CheckBox();
-            this.publishedFPSLabel = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.previewCheckBox = new System.Windows.Forms.CheckBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.targetFramerateTextBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.brightnessTextBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            targetWindowTextBox = new System.Windows.Forms.TextBox();
+            contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
+            button1 = new System.Windows.Forms.Button();
+            panel1 = new System.Windows.Forms.Panel();
+            pictureBox1 = new System.Windows.Forms.PictureBox();
+            label1 = new System.Windows.Forms.Label();
+            tabControl1 = new System.Windows.Forms.TabControl();
+            tabPage1 = new System.Windows.Forms.TabPage();
+            colorModeLabel = new System.Windows.Forms.Label();
+            colorModeComboBox = new System.Windows.Forms.ComboBox();
+            consolePresetComboBox = new System.Windows.Forms.ComboBox();
+            label13 = new System.Windows.Forms.Label();
+            canvasWidthLabel = new System.Windows.Forms.Label();
+            canvasWidthTextBox = new System.Windows.Forms.TextBox();
+            canvasHeightLabel = new System.Windows.Forms.Label();
+            canvasHeightTextBox = new System.Windows.Forms.TextBox();
+            label11 = new System.Windows.Forms.Label();
+            borderWidthTextBox = new System.Windows.Forms.TextBox();
+            previewPixelsChangedCountLabel = new System.Windows.Forms.Label();
+            label12 = new System.Windows.Forms.Label();
+            rowExpansionCheckBox = new System.Windows.Forms.CheckBox();
+            publishedFPSLabel = new System.Windows.Forms.Label();
+            label10 = new System.Windows.Forms.Label();
+            label9 = new System.Windows.Forms.Label();
+            textBox2 = new System.Windows.Forms.TextBox();
+            label7 = new System.Windows.Forms.Label();
+            previewCheckBox = new System.Windows.Forms.CheckBox();
+            label8 = new System.Windows.Forms.Label();
+            textBox6 = new System.Windows.Forms.TextBox();
+            checkBox4 = new System.Windows.Forms.CheckBox();
+            checkBox3 = new System.Windows.Forms.CheckBox();
+            label6 = new System.Windows.Forms.Label();
+            targetFramerateTextBox = new System.Windows.Forms.TextBox();
+            label4 = new System.Windows.Forms.Label();
+            brightnessTextBox = new System.Windows.Forms.TextBox();
+            label3 = new System.Windows.Forms.Label();
+            checkBox1 = new System.Windows.Forms.CheckBox();
+            label2 = new System.Windows.Forms.Label();
+            tabPage2 = new System.Windows.Forms.TabPage();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
+            SuspendLayout();
             // 
             // targetWindowTextBox
             // 
-            this.targetWindowTextBox.Location = new System.Drawing.Point(125, 375);
-            this.targetWindowTextBox.Name = "targetWindowTextBox";
-            this.targetWindowTextBox.Size = new System.Drawing.Size(100, 20);
-            this.targetWindowTextBox.TabIndex = 0;
-            this.targetWindowTextBox.Text = "mGBA";
-            this.targetWindowTextBox.TextChanged += new System.EventHandler(this.targetWindowTextBox_TextChanged);
+            targetWindowTextBox.Location = new System.Drawing.Point(146, 433);
+            targetWindowTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            targetWindowTextBox.Name = "targetWindowTextBox";
+            targetWindowTextBox.Size = new System.Drawing.Size(116, 23);
+            targetWindowTextBox.TabIndex = 0;
+            targetWindowTextBox.Text = "mGBA";
+            targetWindowTextBox.TextChanged += targetWindowTextBox_TextChanged;
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(6, 158);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            button1.Location = new System.Drawing.Point(7, 182);
+            button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(88, 27);
+            button1.TabIndex = 2;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(8, 52);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 100);
-            this.panel1.TabIndex = 3;
+            panel1.Location = new System.Drawing.Point(9, 60);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(233, 115);
+            panel1.TabIndex = 3;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(420, 52);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(256, 240);
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
+            pictureBox1.Location = new System.Drawing.Point(534, 60);
+            pictureBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new System.Drawing.Size(299, 277);
+            pictureBox1.TabIndex = 4;
+            pictureBox1.TabStop = false;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 184);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(125, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Input Websocket Status:";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(9, 212);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(134, 15);
+            label1.TabIndex = 5;
+            label1.Text = "Input Websocket Status:";
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(690, 438);
-            this.tabControl1.TabIndex = 6;
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Location = new System.Drawing.Point(0, 0);
+            tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new System.Drawing.Size(920, 507);
+            tabControl1.TabIndex = 6;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.colorModeLabel);
-            this.tabPage1.Controls.Add(this.colorModeComboBox);
-            this.tabPage1.Controls.Add(this.consolePresetComboBox);
-            this.tabPage1.Controls.Add(this.label13);
-            this.tabPage1.Controls.Add(this.canvasWidthLabel);
-            this.tabPage1.Controls.Add(this.canvasWidthTextBox);
-            this.tabPage1.Controls.Add(this.canvasHeightLabel);
-            this.tabPage1.Controls.Add(this.canvasHeightTextBox);
-            this.tabPage1.Controls.Add(this.label11);
-            this.tabPage1.Controls.Add(this.borderWidthTextBox);
-            this.tabPage1.Controls.Add(this.previewPixelsChangedCountLabel);
-            this.tabPage1.Controls.Add(this.label12);
-            this.tabPage1.Controls.Add(this.rowExpansionCheckBox);
-            this.tabPage1.Controls.Add(this.publishedFPSLabel);
-            this.tabPage1.Controls.Add(this.label10);
-            this.tabPage1.Controls.Add(this.label9);
-            this.tabPage1.Controls.Add(this.textBox2);
-            this.tabPage1.Controls.Add(this.label7);
-            this.tabPage1.Controls.Add(this.previewCheckBox);
-            this.tabPage1.Controls.Add(this.label8);
-            this.tabPage1.Controls.Add(this.textBox6);
-            this.tabPage1.Controls.Add(this.checkBox4);
-            this.tabPage1.Controls.Add(this.checkBox3);
-            this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.targetFramerateTextBox);
-            this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.brightnessTextBox);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.checkBox1);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.targetWindowTextBox);
-            this.tabPage1.Controls.Add(this.pictureBox1);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.panel1);
-            this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(682, 412);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            tabPage1.Controls.Add(colorModeLabel);
+            tabPage1.Controls.Add(colorModeComboBox);
+            tabPage1.Controls.Add(consolePresetComboBox);
+            tabPage1.Controls.Add(label13);
+            tabPage1.Controls.Add(canvasWidthLabel);
+            tabPage1.Controls.Add(canvasWidthTextBox);
+            tabPage1.Controls.Add(canvasHeightLabel);
+            tabPage1.Controls.Add(canvasHeightTextBox);
+            tabPage1.Controls.Add(label11);
+            tabPage1.Controls.Add(borderWidthTextBox);
+            tabPage1.Controls.Add(previewPixelsChangedCountLabel);
+            tabPage1.Controls.Add(label12);
+            tabPage1.Controls.Add(rowExpansionCheckBox);
+            tabPage1.Controls.Add(publishedFPSLabel);
+            tabPage1.Controls.Add(label10);
+            tabPage1.Controls.Add(label9);
+            tabPage1.Controls.Add(textBox2);
+            tabPage1.Controls.Add(label7);
+            tabPage1.Controls.Add(previewCheckBox);
+            tabPage1.Controls.Add(label8);
+            tabPage1.Controls.Add(textBox6);
+            tabPage1.Controls.Add(checkBox4);
+            tabPage1.Controls.Add(checkBox3);
+            tabPage1.Controls.Add(label6);
+            tabPage1.Controls.Add(targetFramerateTextBox);
+            tabPage1.Controls.Add(label4);
+            tabPage1.Controls.Add(brightnessTextBox);
+            tabPage1.Controls.Add(label3);
+            tabPage1.Controls.Add(checkBox1);
+            tabPage1.Controls.Add(label2);
+            tabPage1.Controls.Add(targetWindowTextBox);
+            tabPage1.Controls.Add(pictureBox1);
+            tabPage1.Controls.Add(label1);
+            tabPage1.Controls.Add(panel1);
+            tabPage1.Controls.Add(button1);
+            tabPage1.Location = new System.Drawing.Point(4, 24);
+            tabPage1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabPage1.Size = new System.Drawing.Size(912, 479);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "tabPage1";
+            tabPage1.UseVisualStyleBackColor = true;
+            tabPage1.Click += tabPage1_Click;
             // 
             // colorModeLabel
             // 
-            this.colorModeLabel.AutoSize = true;
-            this.colorModeLabel.Location = new System.Drawing.Point(575, 347);
-            this.colorModeLabel.Name = "colorModeLabel";
-            this.colorModeLabel.Size = new System.Drawing.Size(61, 13);
-            this.colorModeLabel.TabIndex = 39;
-            this.colorModeLabel.Text = "Color Mode";
+            colorModeLabel.AutoSize = true;
+            colorModeLabel.Location = new System.Drawing.Point(715, 400);
+            colorModeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            colorModeLabel.Name = "colorModeLabel";
+            colorModeLabel.Size = new System.Drawing.Size(70, 15);
+            colorModeLabel.TabIndex = 39;
+            colorModeLabel.Text = "Color Mode";
             // 
             // colorModeComboBox
             // 
-            this.colorModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.colorModeComboBox.FormattingEnabled = true;
-            this.colorModeComboBox.Location = new System.Drawing.Point(546, 375);
-            this.colorModeComboBox.Name = "colorModeComboBox";
-            this.colorModeComboBox.Size = new System.Drawing.Size(121, 21);
-            this.colorModeComboBox.TabIndex = 38;
-            this.colorModeComboBox.SelectedIndexChanged += new System.EventHandler(this.colorModeComboBox_SelectedIndexChanged);
+            colorModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            colorModeComboBox.FormattingEnabled = true;
+            colorModeComboBox.Location = new System.Drawing.Point(681, 433);
+            colorModeComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            colorModeComboBox.Name = "colorModeComboBox";
+            colorModeComboBox.Size = new System.Drawing.Size(140, 23);
+            colorModeComboBox.TabIndex = 38;
+            colorModeComboBox.SelectedIndexChanged += colorModeComboBox_SelectedIndexChanged;
             // 
             // consolePresetComboBox
             // 
-            this.consolePresetComboBox.FormattingEnabled = true;
-            this.consolePresetComboBox.Items.AddRange(new object[] {
-            "Gameboy"});
-            this.consolePresetComboBox.Location = new System.Drawing.Point(3, 374);
-            this.consolePresetComboBox.Name = "consolePresetComboBox";
-            this.consolePresetComboBox.Size = new System.Drawing.Size(100, 21);
-            this.consolePresetComboBox.TabIndex = 37;
-            this.consolePresetComboBox.SelectedIndexChanged += new System.EventHandler(this.consolePresetComboBox_SelectedIndexChanged);
+            consolePresetComboBox.FormattingEnabled = true;
+            consolePresetComboBox.Items.AddRange(new object[] { "Gameboy" });
+            consolePresetComboBox.Location = new System.Drawing.Point(4, 432);
+            consolePresetComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            consolePresetComboBox.Name = "consolePresetComboBox";
+            consolePresetComboBox.Size = new System.Drawing.Size(116, 23);
+            consolePresetComboBox.TabIndex = 37;
+            consolePresetComboBox.SelectedIndexChanged += consolePresetComboBox_SelectedIndexChanged;
             // 
             // label13
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(8, 347);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(78, 13);
-            this.label13.TabIndex = 36;
-            this.label13.Text = "Console Preset";
+            label13.AutoSize = true;
+            label13.Location = new System.Drawing.Point(9, 400);
+            label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label13.Name = "label13";
+            label13.Size = new System.Drawing.Size(85, 15);
+            label13.TabIndex = 36;
+            label13.Text = "Console Preset";
             // 
             // canvasWidthLabel
             // 
-            this.canvasWidthLabel.AutoSize = true;
-            this.canvasWidthLabel.Location = new System.Drawing.Point(8, 227);
-            this.canvasWidthLabel.Name = "canvasWidthLabel";
-            this.canvasWidthLabel.Size = new System.Drawing.Size(74, 13);
-            this.canvasWidthLabel.TabIndex = 35;
-            this.canvasWidthLabel.Text = "Canvas Width";
+            canvasWidthLabel.AutoSize = true;
+            canvasWidthLabel.Location = new System.Drawing.Point(9, 262);
+            canvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            canvasWidthLabel.Name = "canvasWidthLabel";
+            canvasWidthLabel.Size = new System.Drawing.Size(80, 15);
+            canvasWidthLabel.TabIndex = 35;
+            canvasWidthLabel.Text = "Canvas Width";
             // 
             // canvasWidthTextBox
             // 
-            this.canvasWidthTextBox.Location = new System.Drawing.Point(3, 246);
-            this.canvasWidthTextBox.Name = "canvasWidthTextBox";
-            this.canvasWidthTextBox.Size = new System.Drawing.Size(100, 20);
-            this.canvasWidthTextBox.TabIndex = 32;
-            this.canvasWidthTextBox.Text = "160";
-            this.canvasWidthTextBox.TextChanged += new System.EventHandler(this.canvasWidthTextBox_TextChanged);
+            canvasWidthTextBox.Location = new System.Drawing.Point(4, 284);
+            canvasWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            canvasWidthTextBox.Name = "canvasWidthTextBox";
+            canvasWidthTextBox.Size = new System.Drawing.Size(116, 23);
+            canvasWidthTextBox.TabIndex = 32;
+            canvasWidthTextBox.Text = "160";
+            canvasWidthTextBox.TextChanged += canvasWidthTextBox_TextChanged;
             // 
             // canvasHeightLabel
             // 
-            this.canvasHeightLabel.AutoSize = true;
-            this.canvasHeightLabel.Location = new System.Drawing.Point(8, 279);
-            this.canvasHeightLabel.Name = "canvasHeightLabel";
-            this.canvasHeightLabel.Size = new System.Drawing.Size(77, 13);
-            this.canvasHeightLabel.TabIndex = 33;
-            this.canvasHeightLabel.Text = "Canvas Height";
+            canvasHeightLabel.AutoSize = true;
+            canvasHeightLabel.Location = new System.Drawing.Point(9, 322);
+            canvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            canvasHeightLabel.Name = "canvasHeightLabel";
+            canvasHeightLabel.Size = new System.Drawing.Size(84, 15);
+            canvasHeightLabel.TabIndex = 33;
+            canvasHeightLabel.Text = "Canvas Height";
             // 
             // canvasHeightTextBox
             // 
-            this.canvasHeightTextBox.Location = new System.Drawing.Point(3, 298);
-            this.canvasHeightTextBox.Name = "canvasHeightTextBox";
-            this.canvasHeightTextBox.Size = new System.Drawing.Size(100, 20);
-            this.canvasHeightTextBox.TabIndex = 33;
-            this.canvasHeightTextBox.Text = "144";
-            this.canvasHeightTextBox.TextChanged += new System.EventHandler(this.canvasHeightTextBox_TextChanged);
+            canvasHeightTextBox.Location = new System.Drawing.Point(4, 344);
+            canvasHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            canvasHeightTextBox.Name = "canvasHeightTextBox";
+            canvasHeightTextBox.Size = new System.Drawing.Size(116, 23);
+            canvasHeightTextBox.TabIndex = 33;
+            canvasHeightTextBox.Text = "144";
+            canvasHeightTextBox.TextChanged += canvasHeightTextBox_TextChanged;
             // 
             // label11
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(270, 175);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(69, 13);
-            this.label11.TabIndex = 31;
-            this.label11.Text = "Border Width";
+            label11.AutoSize = true;
+            label11.Location = new System.Drawing.Point(315, 202);
+            label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label11.Name = "label11";
+            label11.Size = new System.Drawing.Size(77, 15);
+            label11.TabIndex = 31;
+            label11.Text = "Border Width";
             // 
             // borderWidthTextBox
             // 
-            this.borderWidthTextBox.Location = new System.Drawing.Point(265, 194);
-            this.borderWidthTextBox.Name = "borderWidthTextBox";
-            this.borderWidthTextBox.Size = new System.Drawing.Size(100, 20);
-            this.borderWidthTextBox.TabIndex = 30;
-            this.borderWidthTextBox.Text = "8";
-            this.borderWidthTextBox.TextChanged += new System.EventHandler(this.borderWidthTextBox_TextChanged);
+            borderWidthTextBox.Location = new System.Drawing.Point(309, 224);
+            borderWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            borderWidthTextBox.Name = "borderWidthTextBox";
+            borderWidthTextBox.Size = new System.Drawing.Size(116, 23);
+            borderWidthTextBox.TabIndex = 30;
+            borderWidthTextBox.Text = "8";
+            borderWidthTextBox.TextChanged += borderWidthTextBox_TextChanged;
             // 
             // previewPixelsChangedCountLabel
             // 
-            this.previewPixelsChangedCountLabel.AutoSize = true;
-            this.previewPixelsChangedCountLabel.Location = new System.Drawing.Point(337, 42);
-            this.previewPixelsChangedCountLabel.Name = "previewPixelsChangedCountLabel";
-            this.previewPixelsChangedCountLabel.Size = new System.Drawing.Size(13, 13);
-            this.previewPixelsChangedCountLabel.TabIndex = 29;
-            this.previewPixelsChangedCountLabel.Text = "0";
+            previewPixelsChangedCountLabel.AutoSize = true;
+            previewPixelsChangedCountLabel.Location = new System.Drawing.Point(393, 48);
+            previewPixelsChangedCountLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            previewPixelsChangedCountLabel.Name = "previewPixelsChangedCountLabel";
+            previewPixelsChangedCountLabel.Size = new System.Drawing.Size(13, 15);
+            previewPixelsChangedCountLabel.TabIndex = 29;
+            previewPixelsChangedCountLabel.Text = "0";
             // 
             // label12
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(255, 42);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(83, 13);
-            this.label12.TabIndex = 28;
-            this.label12.Text = "Pixels Changed:";
+            label12.AutoSize = true;
+            label12.Location = new System.Drawing.Point(298, 48);
+            label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label12.Name = "label12";
+            label12.Size = new System.Drawing.Size(91, 15);
+            label12.TabIndex = 28;
+            label12.Text = "Pixels Changed:";
             // 
             // rowExpansionCheckBox
             // 
-            this.rowExpansionCheckBox.AutoSize = true;
-            this.rowExpansionCheckBox.Location = new System.Drawing.Point(258, 140);
-            this.rowExpansionCheckBox.Name = "rowExpansionCheckBox";
-            this.rowExpansionCheckBox.Size = new System.Drawing.Size(100, 17);
-            this.rowExpansionCheckBox.TabIndex = 27;
-            this.rowExpansionCheckBox.Text = "Row Expansion";
-            this.rowExpansionCheckBox.UseVisualStyleBackColor = true;
+            rowExpansionCheckBox.AutoSize = true;
+            rowExpansionCheckBox.Location = new System.Drawing.Point(301, 162);
+            rowExpansionCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rowExpansionCheckBox.Name = "rowExpansionCheckBox";
+            rowExpansionCheckBox.Size = new System.Drawing.Size(106, 19);
+            rowExpansionCheckBox.TabIndex = 27;
+            rowExpansionCheckBox.Text = "Row Expansion";
+            rowExpansionCheckBox.UseVisualStyleBackColor = true;
             // 
             // publishedFPSLabel
             // 
-            this.publishedFPSLabel.AutoSize = true;
-            this.publishedFPSLabel.Location = new System.Drawing.Point(337, 16);
-            this.publishedFPSLabel.Name = "publishedFPSLabel";
-            this.publishedFPSLabel.Size = new System.Drawing.Size(13, 13);
-            this.publishedFPSLabel.TabIndex = 26;
-            this.publishedFPSLabel.Text = "0";
+            publishedFPSLabel.AutoSize = true;
+            publishedFPSLabel.Location = new System.Drawing.Point(393, 18);
+            publishedFPSLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            publishedFPSLabel.Name = "publishedFPSLabel";
+            publishedFPSLabel.Size = new System.Drawing.Size(13, 15);
+            publishedFPSLabel.TabIndex = 26;
+            publishedFPSLabel.Text = "0";
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(255, 16);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(79, 13);
-            this.label10.TabIndex = 25;
-            this.label10.Text = "Published FPS:";
+            label10.AutoSize = true;
+            label10.Location = new System.Drawing.Point(298, 18);
+            label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label10.Name = "label10";
+            label10.Size = new System.Drawing.Size(84, 15);
+            label10.TabIndex = 25;
+            label10.Text = "Published FPS:";
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(270, 227);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(80, 13);
-            this.label9.TabIndex = 24;
-            this.label9.Text = "Title Bar Height";
+            label9.AutoSize = true;
+            label9.Location = new System.Drawing.Point(315, 262);
+            label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(88, 15);
+            label9.TabIndex = 24;
+            label9.Text = "Title Bar Height";
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(265, 246);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 23;
-            this.textBox2.Text = "30";
+            textBox2.Location = new System.Drawing.Point(309, 284);
+            textBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new System.Drawing.Size(116, 23);
+            textBox2.TabIndex = 23;
+            textBox2.Text = "30";
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(128, 347);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(80, 13);
-            this.label7.TabIndex = 22;
-            this.label7.Text = "Target Window";
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(149, 400);
+            label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(86, 15);
+            label7.TabIndex = 22;
+            label7.Text = "Target Window";
             // 
             // previewCheckBox
             // 
-            this.previewCheckBox.AutoSize = true;
-            this.previewCheckBox.Checked = true;
-            this.previewCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.previewCheckBox.Location = new System.Drawing.Point(501, 309);
-            this.previewCheckBox.Name = "previewCheckBox";
-            this.previewCheckBox.Size = new System.Drawing.Size(65, 30);
-            this.previewCheckBox.TabIndex = 21;
-            this.previewCheckBox.Text = "Preview\r\nEnabled";
-            this.previewCheckBox.UseVisualStyleBackColor = true;
+            previewCheckBox.AutoSize = true;
+            previewCheckBox.Checked = true;
+            previewCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            previewCheckBox.Location = new System.Drawing.Point(717, 357);
+            previewCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            previewCheckBox.Name = "previewCheckBox";
+            previewCheckBox.Size = new System.Drawing.Size(68, 34);
+            previewCheckBox.TabIndex = 21;
+            previewCheckBox.Text = "Preview\r\nEnabled";
+            previewCheckBox.UseVisualStyleBackColor = true;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(255, 279);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(142, 13);
-            this.label8.TabIndex = 20;
-            this.label8.Text = "Full Frame Interval (seconds)";
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(298, 322);
+            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(158, 15);
+            label8.TabIndex = 20;
+            label8.Text = "Full Frame Interval (seconds)";
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(265, 306);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 19;
-            this.textBox6.Text = "30";
-            this.textBox6.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
+            textBox6.Location = new System.Drawing.Point(309, 353);
+            textBox6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            textBox6.Name = "textBox6";
+            textBox6.Size = new System.Drawing.Size(116, 23);
+            textBox6.TabIndex = 19;
+            textBox6.Text = "30";
+            textBox6.TextChanged += textBox6_TextChanged;
             // 
             // checkBox4
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(258, 104);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(156, 30);
-            this.checkBox4.TabIndex = 18;
-            this.checkBox4.Text = "Confirm Render from Server\r\n(for testing)";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            checkBox4.AutoSize = true;
+            checkBox4.Location = new System.Drawing.Point(301, 120);
+            checkBox4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            checkBox4.Name = "checkBox4";
+            checkBox4.Size = new System.Drawing.Size(174, 34);
+            checkBox4.TabIndex = 18;
+            checkBox4.Text = "Confirm Render from Server\r\n(for testing)";
+            checkBox4.UseVisualStyleBackColor = true;
             // 
             // checkBox3
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = true;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(258, 68);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(111, 30);
-            this.checkBox3.TabIndex = 17;
-            this.checkBox3.Text = "Await Client \r\nRender Confirmed";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            checkBox3.AutoSize = true;
+            checkBox3.Checked = true;
+            checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
+            checkBox3.Location = new System.Drawing.Point(301, 78);
+            checkBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            checkBox3.Name = "checkBox3";
+            checkBox3.Size = new System.Drawing.Size(123, 34);
+            checkBox3.TabIndex = 17;
+            checkBox3.Text = "Await Client \r\nRender Confirmed";
+            checkBox3.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(262, 347);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(88, 13);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Target Framerate";
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(306, 400);
+            label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(95, 15);
+            label6.TabIndex = 14;
+            label6.Text = "Target Framerate";
             // 
             // targetFramerateTextBox
             // 
-            this.targetFramerateTextBox.Location = new System.Drawing.Point(265, 375);
-            this.targetFramerateTextBox.Name = "targetFramerateTextBox";
-            this.targetFramerateTextBox.Size = new System.Drawing.Size(100, 20);
-            this.targetFramerateTextBox.TabIndex = 13;
-            this.targetFramerateTextBox.Text = "36";
-            this.targetFramerateTextBox.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            targetFramerateTextBox.Location = new System.Drawing.Point(309, 433);
+            targetFramerateTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            targetFramerateTextBox.Name = "targetFramerateTextBox";
+            targetFramerateTextBox.Size = new System.Drawing.Size(116, 23);
+            targetFramerateTextBox.TabIndex = 13;
+            targetFramerateTextBox.Text = "36";
+            targetFramerateTextBox.TextChanged += textBox4_TextChanged;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(439, 347);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(56, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "Brightness";
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(556, 400);
+            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(62, 15);
+            label4.TabIndex = 11;
+            label4.Text = "Brightness";
             // 
             // brightnessTextBox
             // 
-            this.brightnessTextBox.Location = new System.Drawing.Point(420, 375);
-            this.brightnessTextBox.Name = "brightnessTextBox";
-            this.brightnessTextBox.Size = new System.Drawing.Size(100, 20);
-            this.brightnessTextBox.TabIndex = 9;
-            this.brightnessTextBox.Text = "1";
-            this.brightnessTextBox.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            brightnessTextBox.Location = new System.Drawing.Point(534, 433);
+            brightnessTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            brightnessTextBox.Name = "brightnessTextBox";
+            brightnessTextBox.Size = new System.Drawing.Size(116, 23);
+            brightnessTextBox.TabIndex = 9;
+            brightnessTextBox.Text = "1";
+            brightnessTextBox.TextChanged += textBox2_TextChanged;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(122, 19);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(105, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Capturable Windows";
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(142, 22);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(117, 15);
+            label3.TabIndex = 0;
+            label3.Text = "Capturable Windows";
             // 
             // checkBox1
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(420, 309);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(65, 30);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.Text = "Server\r\nEnabled";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new System.Drawing.Point(556, 357);
+            checkBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new System.Drawing.Size(68, 34);
+            checkBox1.TabIndex = 7;
+            checkBox1.Text = "Server\r\nEnabled";
+            checkBox1.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(498, 19);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Canvas Preview:";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(625, 22);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(92, 15);
+            label2.TabIndex = 6;
+            label2.Text = "Canvas Preview:";
             // 
             // tabPage2
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(682, 412);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabPage2.Size = new System.Drawing.Size(797, 477);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "tabPage2";
+            tabPage2.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.tabControl1);
-            this.Name = "MainForm";
-            this.Text = "Resonite Game Streamer App";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(933, 519);
+            Controls.Add(tabControl1);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "MainForm";
+            Text = "Resonite Game Streamer App";
+            FormClosing += Form1_FormClosing;
+            Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage1.PerformLayout();
+            ResumeLayout(false);
 
         }
 

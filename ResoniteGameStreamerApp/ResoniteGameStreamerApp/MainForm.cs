@@ -228,5 +228,10 @@ namespace ResoniteGameStreamerApp
             // (optional) log to confirm
             Console.WriteLine("Color mode: " + FrameData.ActiveColorMode);
         }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
