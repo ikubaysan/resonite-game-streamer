@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-vjoy_ws_bridge.py
-
-WebSocket → vJoy bridge with optional JSON "profile" rules.
+WebSocket -> vJoy bridge with optional JSON "profile" rules.
 
 Usage examples:
   # no profile (no special rules):
@@ -21,6 +19,10 @@ JSON profile shape (all optional keys):
   "mutual_exclusions": [
     { "block": "b", "while": "y" },
     { "block": "y", "while": "b" }
+  ],
+  "combo_presses": [
+    { "emit": "j", "when": ["a", "b"] },
+    { "emit": "k", "when": ["x", "y"] }
   ]
 }
 """
@@ -31,7 +33,7 @@ import argparse
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Set
 
 import pyvjoy
 from websocket_server import WebsocketServer
@@ -48,6 +50,7 @@ BUTTON_MAP: Dict[str, int] = {
     "d": 6,
     "l": 7,
     "r": 8,
+    # Extra virtuals for combos (example: Doom)
     "j": 9,
     "k": 10,
 }
@@ -75,19 +78,43 @@ class MutualExclusion:
 
 
 @dataclass
+class ComboPress:
+    """
+    Combo rule: when ALL buttons in 'when' are pressed, force 'emit' pressed.
+    Example: {"emit": "j", "when": ["a", "b"]}
+    """
+    emit: str
+    when: List[str]
+
+    @staticmethod
+    def from_dict(d: Dict[str, object]) -> "ComboPress":
+        emit = str(d["emit"])
+        when_list = [str(x) for x in d.get("when", [])]
+        return ComboPress(emit=emit, when=when_list)
+
+
+@dataclass
 class InputProfile:
     """
     A profile of input rules loaded from JSON. All fields optional in the file.
     """
     disabled_buttons: List[str] = field(default_factory=list)
     mutual_exclusions: List[MutualExclusion] = field(default_factory=list)
+    combo_presses: List[ComboPress] = field(default_factory=list)
 
     @staticmethod
     def load(path: Path) -> "InputProfile":
         data = json.loads(path.read_text(encoding="utf-8"))
+
         disabled = data.get("disabled_buttons", []) or []
         mex = [MutualExclusion.from_dict(m) for m in (data.get("mutual_exclusions", []) or [])]
-        return InputProfile(disabled_buttons=disabled, mutual_exclusions=mex)
+        combos = [ComboPress.from_dict(c) for c in (data.get("combo_presses", []) or [])]
+
+        return InputProfile(
+            disabled_buttons=disabled,
+            mutual_exclusions=mex,
+            combo_presses=combos,
+        )
 
 
 class InputRuleEngine:
@@ -95,6 +122,7 @@ class InputRuleEngine:
     Evaluates whether a given (button, action) should be blocked based on:
       - disabled buttons (presses are blocked; releases allowed for safety)
       - mutual exclusions (press of 'block' is blocked while 'while' is held)
+      - combo presses (emits virtual presses based on current state)
     """
     def __init__(self, profile: Optional[InputProfile]) -> None:
         self.profile = profile
@@ -121,6 +149,36 @@ class InputRuleEngine:
                     return f"'{btn}' blocked while '{rule.while_}' is held (profile)"
 
         return None
+
+    def desired_combo_emit_state(self, state: Dict[str, int]) -> Dict[str, int]:
+        """
+        Calculate which combo 'emit' buttons should be logically pressed (1) or released (0)
+        given the current 'state'. If multiple combos target the same emit, OR-semantics apply.
+        Disabled buttons are never emitted as pressed.
+        """
+        result: Dict[str, int] = {}
+        if not self.profile or not self.profile.combo_presses:
+            return result
+
+        disabled: Set[str] = set(self.profile.disabled_buttons)
+
+        for combo in self.profile.combo_presses:
+            if not combo.when:
+                continue
+            all_pressed = all(state.get(btn, 0) == 1 for btn in combo.when)
+            desired = 1 if all_pressed else 0
+
+            # Respect disabled_buttons for emit as well
+            if combo.emit in disabled:
+                desired = 0
+
+            # OR semantics if multiple combos emit the same button
+            if combo.emit in result:
+                result[combo.emit] = 1 if (result[combo.emit] == 1 or desired == 1) else 0
+            else:
+                result[combo.emit] = desired
+
+        return result
 
 
 # ------------------------------ Controller ------------------------------
@@ -211,6 +269,9 @@ class VJoyWebSocketBridge:
         for btn_name, action in pairs:
             self._handle_one(client, server, btn_name, action)
 
+        # After all updates from this message, evaluate combos once
+        self._apply_combos()
+
         server.send_message(client, f"Received: {message}")
 
     # ------------- Helpers -------------
@@ -267,6 +328,22 @@ class VJoyWebSocketBridge:
             self.controller.set_button(btn_name, True)
             print(f"Button {btn_name} pressed")
 
+    def _apply_combos(self) -> None:
+        """Evaluate combo rules against current state and press/release emit buttons accordingly."""
+        desired = self.rules.desired_combo_emit_state(self.controller.state)
+        if not desired:
+            return
+
+        for emit_btn, want in desired.items():
+            # Only act if state differs (avoid redundant set_button calls)
+            current = self.controller.state.get(emit_btn, 0)
+            if want == 1 and current == 0:
+                self.controller.set_button(emit_btn, True)
+                print(f"[combo] '{emit_btn}' pressed (conditions met)")
+            elif want == 0 and current == 1:
+                self.controller.set_button(emit_btn, False)
+                print(f"[combo] '{emit_btn}' released (conditions no longer met)")
+
     # ------------- Run -------------
 
     def run_forever(self) -> None:
@@ -290,7 +367,8 @@ def _load_profile_from_path(path: Path) -> InputProfile:
     print(
         f"Loaded profile from {path} "
         f"(disabled={profile.disabled_buttons}, "
-        f"mutual_exclusions={[f'{m.block}|while {m.while_}' for m in profile.mutual_exclusions]})"
+        f"mutual_exclusions={[f'{m.block}|while {m.while_}' for m in profile.mutual_exclusions]}, "
+        f"combos={[f'{c.emit}|when {c.when}' for c in profile.combo_presses]})"
     )
     return profile
 

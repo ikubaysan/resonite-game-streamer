@@ -1,0 +1,6 @@
+{
+  "combo_presses": [
+    { "emit": "j", "when": ["a", "b"] },
+    { "emit": "k", "when": ["x", "y"] }
+  ]
+}
