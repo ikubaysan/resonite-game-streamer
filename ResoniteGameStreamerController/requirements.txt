@@ -3,3 +3,4 @@ keyboard~=0.13.5
 pyvjoy~=1.0.1
 websocket-server~=0.6.4
 websocket-client~=1.8.0
+pygame

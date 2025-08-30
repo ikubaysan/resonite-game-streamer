@@ -324,7 +324,7 @@ class VJoyWebSocketBridge:
           y < -0.5 => down=1
           |y| <= 0.5 => vertical neutral
         """
-        THRESHOLD = 0
+        THRESHOLD = 0.25
 
         def dir_state(v: float, neg_name: str, pos_name: str) -> Tuple[str, str, int, int]:
             if v > THRESHOLD:
