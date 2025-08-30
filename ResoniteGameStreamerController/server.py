@@ -315,44 +315,50 @@ class VJoyWebSocketBridge:
 
     def _apply_axis_vector(self, client: dict, server: WebsocketServer, x: float, y: float) -> None:
         """
-        Apply axis sign → direction states:
-          x > 0 => right=1, left=0
-          x < 0 => left=1,  right=0
-          x == 0 => left=0, right=0
-          (same for y with up/down)
+        Apply axis values → direction states:
+          Only activate a direction if abs(value) > 0.5
+          x > +0.5 => right=1
+          x < -0.5 => left=1
+          |x| <= 0.5 => horizontal neutral
+          y > +0.5 => up=1
+          y < -0.5 => down=1
+          |y| <= 0.5 => vertical neutral
         """
-        # Decide desired directional states using sign with tiny epsilon for 'zero'
-        def sgn(v: float) -> int:
-            if v > EPS_ZERO:
-                return 1
-            if v < -EPS_ZERO:
-                return -1
-            return 0
+        THRESHOLD = 0.5
 
-        sx = sgn(x)
-        sy = sgn(y)
+        def dir_state(v: float, neg_name: str, pos_name: str) -> Tuple[str, str, int, int]:
+            if v > THRESHOLD:
+                return (neg_name, pos_name, 0, 1)  # pos active
+            elif v < -THRESHOLD:
+                return (neg_name, pos_name, 1, 0)  # neg active
+            else:
+                return (neg_name, pos_name, 0, 0)  # neutral
+
+        # horizontal
+        l_name, r_name, l_val, r_val = dir_state(x, "l", "r")
+        # vertical
+        d_name, u_name, d_val, u_val = dir_state(y, "d", "u")
 
         desired: Dict[str, int] = {
-            "l": 1 if sx < 0 else 0,
-            "r": 1 if sx > 0 else 0,
-            "u": 1 if sy > 0 else 0,
-            "d": 1 if sy < 0 else 0,
+            "l": l_val,
+            "r": r_val,
+            "u": u_val,
+            "d": d_val,
         }
 
         # Pretty print what we're doing
         active = [k for k, v in desired.items() if v == 1]
         if active:
-            print(f"[vector] x={x:.6f}, y={y:.6f} → activate {', '.join(active)}; neutralize others")
+            print(f"[vector] x={x:.6f}, y={y:.6f} → activate {', '.join(active)} (>|0.5|); neutralize others")
         else:
-            print(f"[vector] x={x:.6f}, y={y:.6f} → all neutral")
+            print(f"[vector] x={x:.6f}, y={y:.6f} → all neutral (within threshold)")
 
-        # Route via the same per-button path so profile rules still apply
-        # (process all four directions every time to keep state consistent)
+        # Apply directions through the normal handler
         for dir_name in ("l", "r", "u", "d"):
             self._handle_one(client, server, dir_name, desired[dir_name])
 
-        # Evaluate combos after applying vector-driven directions
         self._apply_combos()
+
 
     # ------------- Helpers: pair parsing -------------
 
