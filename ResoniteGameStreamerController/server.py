@@ -27,9 +27,11 @@ BUTTON_MAP: Dict[str, int] = {
     "b": 2,
     "x": 3,
     "y": 4,
-    # Extra virtuals for combos (example: Doom)
+    # Extra buttons
     "j": 5,
     "k": 6,
+    "l": 7,
+    "m": 8,
 }
 
 DIRECTIONS = ("u", "d", "l", "r")
@@ -43,6 +45,8 @@ AXIS_MAX = 0x8000
 
 # Float comparisons: treat very small values as zero when parsing [x; y]
 EPS_ZERO = 1e-6
+
+RESET_ALL_MESSAGE = "RESET_ALL"
 
 # ------------------------------ Profiles & Rules ------------------------------
 
@@ -258,6 +262,11 @@ class VJoyWebSocketBridge:
 
     def _on_message(self, client: dict, server: WebsocketServer, message: str) -> None:
         print(f"Received '{message}' from Client({client['id']})")
+
+        if message == RESET_ALL_MESSAGE:
+            self.controller.reset_all()
+            print("Inputs reset on request")
+            return
 
         # First: bracketed vector form like "[0.543; -0.295]"
         if self._looks_like_axis_vector(message):
