@@ -28,10 +28,10 @@ BUTTON_MAP: Dict[str, int] = {
     "x": 3,
     "y": 4,
     # Extra buttons
-    "j": 5,
-    "k": 6,
-    "l": 7,
-    "m": 8,
+    "m": 5,
+    "n": 6,
+    "o": 7,
+    "p": 8,
 }
 
 DIRECTIONS = ("u", "d", "l", "r")
