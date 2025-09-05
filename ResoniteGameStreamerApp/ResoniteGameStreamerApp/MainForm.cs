@@ -303,5 +303,15 @@ namespace ResoniteGameStreamerApp
         {
 
         }
+
+        private void previewCanvasWidthTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void previewCanvasHeightTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
