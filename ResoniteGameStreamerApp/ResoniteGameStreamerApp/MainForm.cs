@@ -433,11 +433,6 @@ namespace ResoniteGameStreamerApp
             }
         }
 
-        private void setEmittedCanvasScaleFactorTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void setEmittedCanvasScaleFactorButton_Click(object sender, EventArgs e)
         {
             string raw = setEmittedCanvasScaleFactorTextBox?.Text?.Trim() ?? "";

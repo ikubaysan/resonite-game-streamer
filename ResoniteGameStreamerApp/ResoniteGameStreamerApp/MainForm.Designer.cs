@@ -86,7 +86,7 @@
             // 
             // targetWindowTextBox
             // 
-            targetWindowTextBox.Location = new System.Drawing.Point(223, 440);
+            targetWindowTextBox.Location = new System.Drawing.Point(223, 449);
             targetWindowTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             targetWindowTextBox.Name = "targetWindowTextBox";
             targetWindowTextBox.Size = new System.Drawing.Size(116, 23);
@@ -198,7 +198,7 @@
             // avgPixelsLabel
             // 
             avgPixelsLabel.AutoSize = true;
-            avgPixelsLabel.Location = new System.Drawing.Point(574, 44);
+            avgPixelsLabel.Location = new System.Drawing.Point(587, 44);
             avgPixelsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             avgPixelsLabel.Name = "avgPixelsLabel";
             avgPixelsLabel.Size = new System.Drawing.Size(13, 15);
@@ -208,7 +208,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new System.Drawing.Point(506, 44);
+            label16.Location = new System.Drawing.Point(519, 44);
             label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label16.Name = "label16";
             label16.Size = new System.Drawing.Size(59, 15);
@@ -218,7 +218,7 @@
             // avgFPSLabel
             // 
             avgFPSLabel.AutoSize = true;
-            avgFPSLabel.Location = new System.Drawing.Point(574, 12);
+            avgFPSLabel.Location = new System.Drawing.Point(587, 12);
             avgFPSLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             avgFPSLabel.Name = "avgFPSLabel";
             avgFPSLabel.Size = new System.Drawing.Size(13, 15);
@@ -228,7 +228,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new System.Drawing.Point(506, 12);
+            label14.Location = new System.Drawing.Point(519, 12);
             label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label14.Name = "label14";
             label14.Size = new System.Drawing.Size(59, 15);
@@ -264,7 +264,6 @@
             setEmittedCanvasScaleFactorTextBox.Size = new System.Drawing.Size(97, 23);
             setEmittedCanvasScaleFactorTextBox.TabIndex = 44;
             setEmittedCanvasScaleFactorTextBox.Text = "1";
-            setEmittedCanvasScaleFactorTextBox.TextChanged += setEmittedCanvasScaleFactorTextBox_TextChanged;
             // 
             // emittedCanvasWidthLabel
             // 
@@ -309,7 +308,7 @@
             // colorModeLabel
             // 
             colorModeLabel.AutoSize = true;
-            colorModeLabel.Location = new System.Drawing.Point(875, 411);
+            colorModeLabel.Location = new System.Drawing.Point(874, 420);
             colorModeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             colorModeLabel.Name = "colorModeLabel";
             colorModeLabel.Size = new System.Drawing.Size(70, 15);
@@ -320,7 +319,7 @@
             // 
             colorModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             colorModeComboBox.FormattingEnabled = true;
-            colorModeComboBox.Location = new System.Drawing.Point(841, 444);
+            colorModeComboBox.Location = new System.Drawing.Point(841, 453);
             colorModeComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             colorModeComboBox.Name = "colorModeComboBox";
             colorModeComboBox.Size = new System.Drawing.Size(140, 23);
@@ -331,7 +330,7 @@
             // 
             consolePresetComboBox.FormattingEnabled = true;
             consolePresetComboBox.Items.AddRange(new object[] { "None", "Gameboy", "NES", "Doom" });
-            consolePresetComboBox.Location = new System.Drawing.Point(16, 440);
+            consolePresetComboBox.Location = new System.Drawing.Point(16, 449);
             consolePresetComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             consolePresetComboBox.Name = "consolePresetComboBox";
             consolePresetComboBox.Size = new System.Drawing.Size(116, 23);
@@ -341,7 +340,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new System.Drawing.Point(31, 407);
+            label13.Location = new System.Drawing.Point(31, 416);
             label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(85, 15);
@@ -411,7 +410,7 @@
             // previewPixelsChangedCountLabel
             // 
             previewPixelsChangedCountLabel.AutoSize = true;
-            previewPixelsChangedCountLabel.Location = new System.Drawing.Point(485, 44);
+            previewPixelsChangedCountLabel.Location = new System.Drawing.Point(457, 44);
             previewPixelsChangedCountLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             previewPixelsChangedCountLabel.Name = "previewPixelsChangedCountLabel";
             previewPixelsChangedCountLabel.Size = new System.Drawing.Size(13, 15);
@@ -421,7 +420,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new System.Drawing.Point(393, 44);
+            label12.Location = new System.Drawing.Point(365, 44);
             label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(91, 15);
@@ -442,7 +441,7 @@
             // publishedFPSLabel
             // 
             publishedFPSLabel.AutoSize = true;
-            publishedFPSLabel.Location = new System.Drawing.Point(485, 12);
+            publishedFPSLabel.Location = new System.Drawing.Point(457, 12);
             publishedFPSLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             publishedFPSLabel.Name = "publishedFPSLabel";
             publishedFPSLabel.Size = new System.Drawing.Size(13, 15);
@@ -452,7 +451,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(393, 12);
+            label10.Location = new System.Drawing.Point(365, 12);
             label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(84, 15);
@@ -481,7 +480,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(230, 407);
+            label7.Location = new System.Drawing.Point(230, 416);
             label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(86, 15);
@@ -493,7 +492,7 @@
             previewCheckBox.AutoSize = true;
             previewCheckBox.Checked = true;
             previewCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            previewCheckBox.Location = new System.Drawing.Point(877, 368);
+            previewCheckBox.Location = new System.Drawing.Point(876, 377);
             previewCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             previewCheckBox.Name = "previewCheckBox";
             previewCheckBox.Size = new System.Drawing.Size(68, 34);
@@ -548,7 +547,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(425, 411);
+            label6.Location = new System.Drawing.Point(425, 420);
             label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(95, 15);
@@ -557,7 +556,7 @@
             // 
             // targetFramerateTextBox
             // 
-            targetFramerateTextBox.Location = new System.Drawing.Point(428, 444);
+            targetFramerateTextBox.Location = new System.Drawing.Point(428, 453);
             targetFramerateTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             targetFramerateTextBox.Name = "targetFramerateTextBox";
             targetFramerateTextBox.Size = new System.Drawing.Size(116, 23);
@@ -568,7 +567,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(716, 411);
+            label4.Location = new System.Drawing.Point(715, 420);
             label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(62, 15);
@@ -577,7 +576,7 @@
             // 
             // brightnessTextBox
             // 
-            brightnessTextBox.Location = new System.Drawing.Point(694, 444);
+            brightnessTextBox.Location = new System.Drawing.Point(694, 453);
             brightnessTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             brightnessTextBox.Name = "brightnessTextBox";
             brightnessTextBox.Size = new System.Drawing.Size(116, 23);
@@ -598,7 +597,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new System.Drawing.Point(716, 368);
+            checkBox1.Location = new System.Drawing.Point(715, 377);
             checkBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new System.Drawing.Size(68, 34);
@@ -632,7 +631,7 @@
             tabPage2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tabPage2.Size = new System.Drawing.Size(1042, 538);
+            tabPage2.Size = new System.Drawing.Size(1022, 496);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
