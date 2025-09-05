@@ -21,6 +21,8 @@ namespace ResoniteGameStreamerApp
         private int MAX_FRAME_HEIGHT = 999;
         public static int FRAME_WIDTH = 240;
         public static int FRAME_HEIGHT = 160;
+        public static int PREVIEW_WIDTH = 240;
+        public static int PREVIEW_HEIGHT = 160;
         private int TargetFramerate = 36;
 
         private int PixelDataMemoryMappedFileSize;
@@ -54,6 +56,12 @@ namespace ResoniteGameStreamerApp
             _settings = SettingsManager.Load();
             FRAME_WIDTH = _settings.FrameWidth;
             FRAME_HEIGHT = _settings.FrameHeight;
+
+            PREVIEW_WIDTH = (_settings.PreviewFrameWidth >= 100 && _settings.PreviewFrameWidth <= 999)
+                ? _settings.PreviewFrameWidth : FRAME_WIDTH;
+            PREVIEW_HEIGHT = (_settings.PreviewFrameHeight >= 100 && _settings.PreviewFrameHeight <= 999)
+                ? _settings.PreviewFrameHeight : FRAME_HEIGHT;
+
             TargetFramerate = _settings.TargetFramerate;
             targetWindowTitle = _settings.TargetWindowTitle ?? "mGBA";
             borderWidth = _settings.BorderWidth;
@@ -65,6 +73,8 @@ namespace ResoniteGameStreamerApp
 
             if (canvasWidthTextBox != null) canvasWidthTextBox.Text = _settings.FrameWidth.ToString();
             if (canvasHeightTextBox != null) canvasHeightTextBox.Text = _settings.FrameHeight.ToString();
+            if (previewCanvasWidthTextBox != null) previewCanvasWidthTextBox.Text = PREVIEW_WIDTH.ToString();
+            if (previewCanvasHeightTextBox != null) previewCanvasHeightTextBox.Text = PREVIEW_HEIGHT.ToString();
             if (targetFramerateTextBox != null) targetFramerateTextBox.Text = _settings.TargetFramerate.ToString();
             if (targetWindowTextBox != null) targetWindowTextBox.Text = _settings.TargetWindowTitle;
             if (borderWidthTextBox != null) borderWidthTextBox.Text = _settings.BorderWidth.ToString();
@@ -91,9 +101,12 @@ namespace ResoniteGameStreamerApp
         private void InitializeCanvas()
         {
             PixelDataMemoryMappedFileSize = ((MAX_FRAME_WIDTH * MAX_FRAME_HEIGHT * 2) + 3) * sizeof(int);
-            pictureBox1.Width = FRAME_WIDTH;
-            pictureBox1.Height = FRAME_HEIGHT;
 
+            // Preview display size (independent from capture size)
+            pictureBox1.Width = PREVIEW_WIDTH;
+            pictureBox1.Height = PREVIEW_HEIGHT;
+
+            // Internal bitmaps remain at capture size
             FrameData._cachedBitmap = new Bitmap(FRAME_WIDTH, FRAME_HEIGHT);
             FrameData._simulatedCanvas = new Bitmap(FRAME_WIDTH, FRAME_HEIGHT);
             FrameData.rowContiguousSpanEndIndices = new int[FRAME_HEIGHT];
@@ -101,6 +114,7 @@ namespace ResoniteGameStreamerApp
             MemoryMappedFileManager.readContiguousRangePairs = new int[FRAME_WIDTH * FRAME_HEIGHT];
             MemoryMappedFileManager.readPixelData = new int[FRAME_WIDTH * FRAME_HEIGHT];
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -275,6 +289,8 @@ namespace ResoniteGameStreamerApp
                 targetWindowTextBox.Text = "mGBA";
                 canvasWidthTextBox.Text = "160";
                 canvasHeightTextBox.Text = "144";
+                previewCanvasWidthTextBox.Text = "160";
+                previewCanvasHeightTextBox.Text = "144";
             }
 
             if (selectedValue == "Doom")
@@ -282,10 +298,11 @@ namespace ResoniteGameStreamerApp
                 targetWindowTextBox.Text = "Chocolate Doom";
                 canvasWidthTextBox.Text = "320";
                 canvasHeightTextBox.Text = "200";
+                previewCanvasWidthTextBox.Text = "320";
+                previewCanvasHeightTextBox.Text = "200";
             }
-
-
         }
+
 
         private void colorModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -306,12 +323,32 @@ namespace ResoniteGameStreamerApp
 
         private void previewCanvasWidthTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings) return;
+            if (int.TryParse(previewCanvasWidthTextBox.Text, out int w) &&
+                w >= 100 && w <= 999)
+            {
+                PREVIEW_WIDTH = w;
+                _settings.PreviewFrameWidth = PREVIEW_WIDTH;
+                SettingsManager.Save(_settings);
 
+                // Apply immediately without reallocating capture buffers
+                pictureBox1.Width = PREVIEW_WIDTH;
+            }
         }
 
         private void previewCanvasHeightTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings) return;
+            if (int.TryParse(previewCanvasHeightTextBox.Text, out int h) &&
+                h >= 100 && h <= 999)
+            {
+                PREVIEW_HEIGHT = h;
+                _settings.PreviewFrameHeight = PREVIEW_HEIGHT;
+                SettingsManager.Save(_settings);
 
+                // Apply immediately without reallocating capture buffers
+                pictureBox1.Height = PREVIEW_HEIGHT;
+            }
         }
     }
 }
