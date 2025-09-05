@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -160,9 +161,12 @@ namespace ResoniteGameStreamerApp
             int width = adjustedRight - adjustedLeft;
             int height = adjustedBottom - adjustedTop;
 
+            // Capture into a bitmap sized to CAPTURE (FRAME_*)
             Bitmap bmp = new Bitmap(MainForm.FRAME_WIDTH, MainForm.FRAME_HEIGHT, PixelFormat.Format32bppArgb);
             using (Graphics g = Graphics.FromImage(bmp))
             {
+                // Copy source screen region; this does not scale. If the window’s interior is not the same size
+                // as FRAME_*, you may prefer DrawImage from a screen copy; keeping as-is to match existing behavior.
                 g.CopyFromScreen(adjustedLeft, adjustedTop, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
             }
 
@@ -194,29 +198,45 @@ namespace ResoniteGameStreamerApp
             return bmp;
         }
 
-
-        // -------------- Generate (mode-aware) --------------
+        // -------------- Generate (mode-aware, emitted-sized) --------------
         public static (List<int>, List<int>) GeneratePixelDataFromWindow(
             string targetWindowTitle,
             int borderWidth,
             int titleBarHeight,
-            int width,
-            int height,
+            int width,                 // EMITTED width
+            int height,                // EMITTED height
             bool forceFullFrame,
             bool rowExpansionEnabled,
             double brightnessFactor,
             double darkenFactor)
         {
-            Bitmap bmp = CaptureWindow(targetWindowTitle, borderWidth, titleBarHeight, brightnessFactor, darkenFactor);
-            if (bmp == null) return (null, null);
+            Bitmap captured = CaptureWindow(targetWindowTitle, borderWidth, titleBarHeight, brightnessFactor, darkenFactor);
+            if (captured == null) return (null, null);
+
+            // Scale captured (FRAME_*) -> emitted (width x height)
+            Bitmap emitBmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            using (Graphics g = Graphics.FromImage(emitBmp))
+            {
+                g.InterpolationMode = InterpolationMode.NearestNeighbor; // crisp for retro/pixel content
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.DrawImage(
+                    captured,
+                    new Rectangle(0, 0, width, height),
+                    new Rectangle(0, 0, captured.Width, captured.Height),
+                    GraphicsUnit.Pixel
+                );
+            }
+            captured.Dispose();
 
             List<int> pixelDataList = new List<int>();
             rgbToSpans = new Dictionary<int, List<int>>();
 
-            BitmapData currentBmpData = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, bmp.PixelFormat);
+            // Diff against cached (also emitted-sized)
+            BitmapData currentBmpData = emitBmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, emitBmp.PixelFormat);
             BitmapData cachedBmpData = _cachedBitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, _cachedBitmap.PixelFormat);
 
-            int bytesPerPixel = Image.GetPixelFormatSize(bmp.PixelFormat) / 8;
+            int bytesPerPixel = Image.GetPixelFormatSize(emitBmp.PixelFormat) / 8;
             byte[] currentBmpBytes = new byte[width * height * bytesPerPixel];
             byte[] cachedBmpBytes = new byte[width * height * bytesPerPixel];
 
@@ -265,7 +285,7 @@ namespace ResoniteGameStreamerApp
                 }
             }
 
-            // (Optional) contiguous row logic could go here; we keep empty as before in GB app
+            // (Optional) contiguous row logic could go here
             contiguousRangePairs = new List<int>();
 
             // Flatten to stream: colorKey, spans..., -lastSpan
@@ -276,9 +296,9 @@ namespace ResoniteGameStreamerApp
                 pixelDataList.Add(-kvp.Value.Last());
             }
 
-            bmp.UnlockBits(currentBmpData);
+            emitBmp.UnlockBits(currentBmpData);
             _cachedBitmap.UnlockBits(cachedBmpData);
-            _cachedBitmap = bmp;
+            _cachedBitmap = emitBmp; // cache the emitted-sized frame
 
             return (pixelDataList, contiguousRangePairs);
         }
@@ -287,7 +307,7 @@ namespace ResoniteGameStreamerApp
         private static void InitializeRowExpansionAmounts()
         {
             rowExpansionAmounts = new Dictionary<int, int>();
-            for (int i = 0; i < MainForm.FRAME_HEIGHT; i++)
+            for (int i = 0; i < MainForm.EMITTED_HEIGHT; i++)
                 rowExpansionAmounts[i] = 1;
         }
 
@@ -318,7 +338,7 @@ namespace ResoniteGameStreamerApp
                 ApplyRowHeight(_simulatedCanvas, row.Key, row.Value);
         }
 
-        // -------------- Preview decode (mode-aware) --------------
+        // -------------- Preview decode (mode-aware, emitted-sized) --------------
         public static Bitmap SetPixelDataToBitmap()
         {
             if (rowExpansionAmounts == null) InitializeRowExpansionAmounts();

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO.MemoryMappedFiles;
 using System.Text.Json;
 using System.IO;
+using System.Globalization;
 
 namespace ResoniteGameStreamerApp
 {
@@ -21,8 +22,8 @@ namespace ResoniteGameStreamerApp
         private int MAX_FRAME_HEIGHT = 999;
         public static int FRAME_WIDTH = 240;
         public static int FRAME_HEIGHT = 160;
-        public static int PREVIEW_WIDTH = 240;
-        public static int PREVIEW_HEIGHT = 160;
+        public static int EMITTED_WIDTH = 240;
+        public static int EMITTED_HEIGHT = 160;
         private int TargetFramerate = 36;
 
         private int PixelDataMemoryMappedFileSize;
@@ -57,10 +58,10 @@ namespace ResoniteGameStreamerApp
             FRAME_WIDTH = _settings.FrameWidth;
             FRAME_HEIGHT = _settings.FrameHeight;
 
-            PREVIEW_WIDTH = (_settings.PreviewFrameWidth >= 100 && _settings.PreviewFrameWidth <= 999)
-                ? _settings.PreviewFrameWidth : FRAME_WIDTH;
-            PREVIEW_HEIGHT = (_settings.PreviewFrameHeight >= 100 && _settings.PreviewFrameHeight <= 999)
-                ? _settings.PreviewFrameHeight : FRAME_HEIGHT;
+            EMITTED_WIDTH = (_settings.EmittedFrameWidth >= 100 && _settings.EmittedFrameWidth <= 999)
+                ? _settings.EmittedFrameWidth : FRAME_WIDTH;
+            EMITTED_HEIGHT = (_settings.EmittedFrameHeight >= 100 && _settings.EmittedFrameHeight <= 999)
+                ? _settings.EmittedFrameHeight : FRAME_HEIGHT;
 
             TargetFramerate = _settings.TargetFramerate;
             targetWindowTitle = _settings.TargetWindowTitle ?? "mGBA";
@@ -73,8 +74,10 @@ namespace ResoniteGameStreamerApp
 
             if (canvasWidthTextBox != null) canvasWidthTextBox.Text = _settings.FrameWidth.ToString();
             if (canvasHeightTextBox != null) canvasHeightTextBox.Text = _settings.FrameHeight.ToString();
-            if (emittedCanvasWidthTextBox != null) emittedCanvasWidthTextBox.Text = PREVIEW_WIDTH.ToString();
-            if (emittedCanvasHeightTextBox != null) emittedCanvasHeightTextBox.Text = PREVIEW_HEIGHT.ToString();
+
+            if (emittedCanvasWidthTextBox != null) emittedCanvasWidthTextBox.Text = EMITTED_WIDTH.ToString();
+            if (emittedCanvasHeightTextBox != null) emittedCanvasHeightTextBox.Text = EMITTED_HEIGHT.ToString();
+
             if (targetFramerateTextBox != null) targetFramerateTextBox.Text = _settings.TargetFramerate.ToString();
             if (targetWindowTextBox != null) targetWindowTextBox.Text = _settings.TargetWindowTitle;
             if (borderWidthTextBox != null) borderWidthTextBox.Text = _settings.BorderWidth.ToString();
@@ -102,17 +105,18 @@ namespace ResoniteGameStreamerApp
         {
             PixelDataMemoryMappedFileSize = ((MAX_FRAME_WIDTH * MAX_FRAME_HEIGHT * 2) + 3) * sizeof(int);
 
-            // Preview display size (independent from capture size)
-            pictureBox1.Width = PREVIEW_WIDTH;
-            pictureBox1.Height = PREVIEW_HEIGHT;
+            // Preview display uses emitted dimensions
+            pictureBox1.Width = EMITTED_WIDTH;
+            pictureBox1.Height = EMITTED_HEIGHT;
 
-            // Internal bitmaps remain at capture size
-            FrameData._cachedBitmap = new Bitmap(FRAME_WIDTH, FRAME_HEIGHT);
-            FrameData._simulatedCanvas = new Bitmap(FRAME_WIDTH, FRAME_HEIGHT);
-            FrameData.rowContiguousSpanEndIndices = new int[FRAME_HEIGHT];
+            // Decoding & diff happen at emitted dimensions
+            FrameData._cachedBitmap = new Bitmap(EMITTED_WIDTH, EMITTED_HEIGHT);
+            FrameData._simulatedCanvas = new Bitmap(EMITTED_WIDTH, EMITTED_HEIGHT);
+            FrameData.rowContiguousSpanEndIndices = new int[EMITTED_HEIGHT];
 
-            MemoryMappedFileManager.readContiguousRangePairs = new int[FRAME_WIDTH * FRAME_HEIGHT];
-            MemoryMappedFileManager.readPixelData = new int[FRAME_WIDTH * FRAME_HEIGHT];
+            // Reader working buffers sized by emitted dims (worst case 1 int per pixel in your layout)
+            MemoryMappedFileManager.readContiguousRangePairs = new int[EMITTED_WIDTH * EMITTED_HEIGHT];
+            MemoryMappedFileManager.readPixelData = new int[EMITTED_WIDTH * EMITTED_HEIGHT];
         }
 
 
@@ -154,9 +158,15 @@ namespace ResoniteGameStreamerApp
             MemoryMappedFileManager._lastFrameTime = DateTime.Now;
 
             var (pixelData, contiguousRangePairs) = FrameData.GeneratePixelDataFromWindow(
-                targetWindowTitle, borderWidth, titleBarHeight,
-                FRAME_WIDTH, FRAME_HEIGHT, forceFullFrame,
-                rowExpansionCheckBox.Checked, brightnessFactor, darkenFactor);
+                targetWindowTitle,
+                borderWidth,
+                titleBarHeight,
+                EMITTED_WIDTH, EMITTED_HEIGHT,
+                forceFullFrame,
+                rowExpansionCheckBox.Checked,
+                brightnessFactor,
+                darkenFactor);
+
 
             if (pixelData == null) return;
 
@@ -263,6 +273,17 @@ namespace ResoniteGameStreamerApp
             {
                 FRAME_WIDTH = selectedCanvasWidth;
                 _settings.FrameWidth = FRAME_WIDTH;
+
+                // Auto-sync emitted WIDTH to match capture WIDTH
+                EMITTED_WIDTH = FRAME_WIDTH;
+                _settings.EmittedFrameWidth = EMITTED_WIDTH;
+
+                // Update the emitted width textbox without triggering its handler
+                _isRestoringSettings = true;
+                if (emittedCanvasWidthTextBox != null)
+                    emittedCanvasWidthTextBox.Text = EMITTED_WIDTH.ToString();
+                _isRestoringSettings = false;
+
                 SettingsManager.Save(_settings);
                 InitializeCanvas();
             }
@@ -276,6 +297,17 @@ namespace ResoniteGameStreamerApp
             {
                 FRAME_HEIGHT = selectedCanvasHeight;
                 _settings.FrameHeight = FRAME_HEIGHT;
+
+                // Auto-sync emitted HEIGHT to match capture HEIGHT
+                EMITTED_HEIGHT = FRAME_HEIGHT;
+                _settings.EmittedFrameHeight = EMITTED_HEIGHT;
+
+                // Update the emitted height textbox without triggering its handler
+                _isRestoringSettings = true;
+                if (emittedCanvasHeightTextBox != null)
+                    emittedCanvasHeightTextBox.Text = EMITTED_HEIGHT.ToString();
+                _isRestoringSettings = false;
+
                 SettingsManager.Save(_settings);
                 InitializeCanvas();
             }
@@ -296,10 +328,10 @@ namespace ResoniteGameStreamerApp
             if (selectedValue == "Doom")
             {
                 targetWindowTextBox.Text = "Chocolate Doom";
-                canvasWidthTextBox.Text = "320";
-                canvasHeightTextBox.Text = "200";
-                emittedCanvasWidthTextBox.Text = "320";
-                emittedCanvasHeightTextBox.Text = "200";
+                canvasWidthTextBox.Text = "318";
+                canvasHeightTextBox.Text = "240";
+                emittedCanvasWidthTextBox.Text = "318";
+                emittedCanvasHeightTextBox.Text = "240";
             }
         }
 
@@ -324,31 +356,87 @@ namespace ResoniteGameStreamerApp
         private void emittedCanvasWidthTextBox_TextChanged(object sender, EventArgs e)
         {
             if (_isRestoringSettings) return;
-            if (int.TryParse(emittedCanvasWidthTextBox.Text, out int w) &&
-                w >= 100 && w <= 999)
+            if (int.TryParse(emittedCanvasWidthTextBox.Text, out int w) && w >= 100 && w <= 999)
             {
-                PREVIEW_WIDTH = w;
-                _settings.PreviewFrameWidth = PREVIEW_WIDTH;
+                EMITTED_WIDTH = w;
+                _settings.EmittedFrameWidth = EMITTED_WIDTH;
                 SettingsManager.Save(_settings);
 
-                // Apply immediately without reallocating capture buffers
-                pictureBox1.Width = PREVIEW_WIDTH;
+                pictureBox1.Width = EMITTED_WIDTH;
+                InitializeCanvas(); // reallocate decode/cached to new emitted size
             }
         }
 
         private void emittedCanvasHeightTextBox_TextChanged(object sender, EventArgs e)
         {
             if (_isRestoringSettings) return;
-            if (int.TryParse(emittedCanvasHeightTextBox.Text, out int h) &&
-                h >= 100 && h <= 999)
+            if (int.TryParse(emittedCanvasHeightTextBox.Text, out int h) && h >= 100 && h <= 999)
             {
-                PREVIEW_HEIGHT = h;
-                _settings.PreviewFrameHeight = PREVIEW_HEIGHT;
+                EMITTED_HEIGHT = h;
+                _settings.EmittedFrameHeight = EMITTED_HEIGHT;
                 SettingsManager.Save(_settings);
 
-                // Apply immediately without reallocating capture buffers
-                pictureBox1.Height = PREVIEW_HEIGHT;
+                pictureBox1.Height = EMITTED_HEIGHT;
+                InitializeCanvas(); // reallocate decode/cached to new emitted size
             }
         }
+
+        private void setEmittedCanvasScaleFactorTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void setEmittedCanvasScaleFactorButton_Click(object sender, EventArgs e)
+        {
+            string raw = setEmittedCanvasScaleFactorTextBox?.Text?.Trim() ?? "";
+            double scale;
+
+            // Try invariant (1.5) first, then fallback to current culture (in case of comma decimals)
+            if (!double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out scale) &&
+                !double.TryParse(raw, NumberStyles.Float, CultureInfo.CurrentCulture, out scale))
+            {
+                MessageBox.Show("Scale factor must be a number (e.g., 2 or 1.5).",
+                    "Invalid scale factor", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!(scale > 0.0 && scale < 10.0))
+            {
+                MessageBox.Show("Scale factor must be > 0 and < 10.",
+                    "Invalid scale factor", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int newW = (int)Math.Round(FRAME_WIDTH * scale);
+            int newH = (int)Math.Round(FRAME_HEIGHT * scale);
+
+            // Respect the same emitted validation used elsewhere (100..999)
+            if (newW < 100 || newW > 999 || newH < 100 || newH > 999)
+            {
+                MessageBox.Show(
+                    $"Resulting emitted size would be {newW}×{newH}.\n" +
+                    "Emitted width and height must be between 100 and 999.",
+                    "Size out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Update UI textboxes without triggering handlers
+            _isRestoringSettings = true;
+            if (emittedCanvasWidthTextBox != null) emittedCanvasWidthTextBox.Text = newW.ToString();
+            if (emittedCanvasHeightTextBox != null) emittedCanvasHeightTextBox.Text = newH.ToString();
+            _isRestoringSettings = false;
+
+            // Apply emitted sizes and persist them (scale factor itself is not saved)
+            EMITTED_WIDTH = newW;
+            EMITTED_HEIGHT = newH;
+            _settings.EmittedFrameWidth = EMITTED_WIDTH;
+            _settings.EmittedFrameHeight = EMITTED_HEIGHT;
+            SettingsManager.Save(_settings);
+
+            pictureBox1.Width = EMITTED_WIDTH;
+            pictureBox1.Height = EMITTED_HEIGHT;
+            InitializeCanvas();
+        }
+
     }
 }

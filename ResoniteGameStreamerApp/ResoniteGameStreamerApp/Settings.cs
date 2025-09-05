@@ -15,8 +15,8 @@ namespace ResoniteGameStreamerApp
         public int TitleBarHeight { get; set; } = 30;
         public int FullFrameIntervalSeconds { get; set; } = 30;
 
-        public int PreviewFrameWidth { get; set; } = 240;
-        public int PreviewFrameHeight { get; set; } = 160;
+        public int EmittedFrameWidth { get; set; } = 240;
+        public int EmittedFrameHeight { get; set; } = 160;
     }
 
     public static class SettingsManager
