@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.MemoryMappedFiles;
+using System.Text.Json;
 using System.IO;
 
 namespace ResoniteGameStreamerApp
@@ -40,20 +41,51 @@ namespace ResoniteGameStreamerApp
         private DateTime _lastTickTime = DateTime.Now;
         public static int latestPreviewPixelsChangedCount = 0;
 
+        private AppSettings _settings = new AppSettings();
+        private bool _isRestoringSettings = false;
+
         public MainForm()
         {
             InitializeComponent();
             _random = new Random();
             programStartTime = DateTime.Now;
 
-            // Optional: populate the new color mode combo
+            // Load settings into fields first
+            _settings = SettingsManager.Load();
+            FRAME_WIDTH = _settings.FrameWidth;
+            FRAME_HEIGHT = _settings.FrameHeight;
+            TargetFramerate = _settings.TargetFramerate;
+            targetWindowTitle = _settings.TargetWindowTitle ?? "mGBA";
+            borderWidth = _settings.BorderWidth;
+            titleBarHeight = _settings.TitleBarHeight;
+            fullFrameInterval = Math.Max(1, _settings.FullFrameIntervalSeconds) * 1000;
+
+            // Now reflect into controls, but suppress event handlers while we do it
+            _isRestoringSettings = true;
+
+            if (canvasWidthTextBox != null) canvasWidthTextBox.Text = _settings.FrameWidth.ToString();
+            if (canvasHeightTextBox != null) canvasHeightTextBox.Text = _settings.FrameHeight.ToString();
+            if (targetFramerateTextBox != null) targetFramerateTextBox.Text = _settings.TargetFramerate.ToString();
+            if (targetWindowTextBox != null) targetWindowTextBox.Text = _settings.TargetWindowTitle;
+            if (borderWidthTextBox != null) borderWidthTextBox.Text = _settings.BorderWidth.ToString();
+
+            // BUGFIX: you had `if (titleBarHeight != null)` comparing an int to null
+            if (titleBarHeightTextBox != null) titleBarHeightTextBox.Text = _settings.TitleBarHeight.ToString();
+
+            if (fullFrameIntervalTextBox != null)
+                fullFrameIntervalTextBox.Text = _settings.FullFrameIntervalSeconds.ToString();
+
             if (colorModeComboBox != null)
             {
                 colorModeComboBox.Items.Clear();
                 colorModeComboBox.Items.Add("RGB");
                 colorModeComboBox.Items.Add("Greyscale");
-                colorModeComboBox.SelectedIndex = 0;
+                var idx = string.Equals(_settings.ColorMode, "Greyscale", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+                colorModeComboBox.SelectedIndex = idx;
+                FrameData.ActiveColorMode = idx == 0 ? ColorMode.RGB : ColorMode.GREYSCALE;
             }
+
+            _isRestoringSettings = false;
         }
 
         private void InitializeCanvas()
@@ -148,21 +180,27 @@ namespace ResoniteGameStreamerApp
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            SettingsManager.Save(_settings);
             MemoryMappedFileManager._pixelDataMemoryMappedFile?.Dispose();
         }
 
-        private void textBox4_TextChanged(object sender, EventArgs e)
+        private void targetFramerateTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings || _timer == null) return;  // <-- guard
+
             if (int.TryParse(targetFramerateTextBox.Text, out int selectedTargetFramerate)
                 && selectedTargetFramerate <= 60 && selectedTargetFramerate >= 1)
             {
                 TargetFramerate = selectedTargetFramerate;
+                _settings.TargetFramerate = TargetFramerate;
+                SettingsManager.Save(_settings);
+
                 _timer.Interval = (int)((1.0 / TargetFramerate) * 1000);
                 Console.WriteLine("TargetFramerate changed to " + TargetFramerate + " and Timer Interval set to " + _timer.Interval);
             }
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
+        private void brightnessTextBox_TextChanged(object sender, EventArgs e)
         {
             if (!double.TryParse(brightnessTextBox.Text, out brightnessFactor) ||
                 brightnessFactor < 0 || brightnessFactor > 2.0)
@@ -171,37 +209,60 @@ namespace ResoniteGameStreamerApp
 
         private void targetWindowTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings) return;
             targetWindowTitle = targetWindowTextBox.Text;
+            _settings.TargetWindowTitle = targetWindowTitle;
+            SettingsManager.Save(_settings);
         }
 
-        private void textBox6_TextChanged(object sender, EventArgs e)
+        private void fullFrameIntervalTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (int.TryParse(textBox6.Text, out int selectedFullFrameInterval) && selectedFullFrameInterval >= 1)
-                fullFrameInterval = selectedFullFrameInterval * 1000;
+            if (_isRestoringSettings) return;
+
+            if (int.TryParse(fullFrameIntervalTextBox.Text, out int seconds) && seconds >= 1)
+            {
+                // runtime uses ms
+                fullFrameInterval = seconds * 1000;
+
+                // persist in seconds
+                _settings.FullFrameIntervalSeconds = seconds;
+                SettingsManager.Save(_settings);
+            }
         }
 
         private void borderWidthTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings) return;
             if (int.TryParse(borderWidthTextBox.Text, out int selectedBorderWidth))
+            {
                 borderWidth = selectedBorderWidth;
+                _settings.BorderWidth = borderWidth;
+                SettingsManager.Save(_settings);
+            }
         }
 
         private void canvasWidthTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings) return;
             if (int.TryParse(canvasWidthTextBox.Text, out int selectedCanvasWidth) &&
                 selectedCanvasWidth >= 100 && selectedCanvasWidth <= 999)
             {
                 FRAME_WIDTH = selectedCanvasWidth;
+                _settings.FrameWidth = FRAME_WIDTH;
+                SettingsManager.Save(_settings);
                 InitializeCanvas();
             }
         }
 
         private void canvasHeightTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings) return;
             if (int.TryParse(canvasHeightTextBox.Text, out int selectedCanvasHeight) &&
                 selectedCanvasHeight >= 100 && selectedCanvasHeight <= 999)
             {
                 FRAME_HEIGHT = selectedCanvasHeight;
+                _settings.FrameHeight = FRAME_HEIGHT;
+                SettingsManager.Save(_settings);
                 InitializeCanvas();
             }
         }
@@ -217,18 +278,18 @@ namespace ResoniteGameStreamerApp
             }
         }
 
-        // -------- NEW: color mode combobox handler --------
         private void colorModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_isRestoringSettings) return;
             var sel = colorModeComboBox.SelectedItem?.ToString();
             FrameData.ActiveColorMode = string.Equals(sel, "RGB", StringComparison.OrdinalIgnoreCase)
                 ? ColorMode.RGB
                 : ColorMode.GREYSCALE;
 
-            // (optional) log to confirm
+            _settings.ColorMode = sel ?? "RGB";
+            SettingsManager.Save(_settings);
             Console.WriteLine("Color mode: " + FrameData.ActiveColorMode);
         }
-
         private void tabPage1_Click(object sender, EventArgs e)
         {
 

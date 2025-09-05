@@ -53,11 +53,11 @@
             publishedFPSLabel = new System.Windows.Forms.Label();
             label10 = new System.Windows.Forms.Label();
             label9 = new System.Windows.Forms.Label();
-            textBox2 = new System.Windows.Forms.TextBox();
+            titleBarHeightTextBox = new System.Windows.Forms.TextBox();
             label7 = new System.Windows.Forms.Label();
             previewCheckBox = new System.Windows.Forms.CheckBox();
             label8 = new System.Windows.Forms.Label();
-            textBox6 = new System.Windows.Forms.TextBox();
+            fullFrameIntervalTextBox = new System.Windows.Forms.TextBox();
             checkBox4 = new System.Windows.Forms.CheckBox();
             checkBox3 = new System.Windows.Forms.CheckBox();
             label6 = new System.Windows.Forms.Label();
@@ -154,11 +154,11 @@
             tabPage1.Controls.Add(publishedFPSLabel);
             tabPage1.Controls.Add(label10);
             tabPage1.Controls.Add(label9);
-            tabPage1.Controls.Add(textBox2);
+            tabPage1.Controls.Add(titleBarHeightTextBox);
             tabPage1.Controls.Add(label7);
             tabPage1.Controls.Add(previewCheckBox);
             tabPage1.Controls.Add(label8);
-            tabPage1.Controls.Add(textBox6);
+            tabPage1.Controls.Add(fullFrameIntervalTextBox);
             tabPage1.Controls.Add(checkBox4);
             tabPage1.Controls.Add(checkBox3);
             tabPage1.Controls.Add(label6);
@@ -346,14 +346,14 @@
             label9.TabIndex = 24;
             label9.Text = "Title Bar Height";
             // 
-            // textBox2
+            // titleBarHeightTextBox
             // 
-            textBox2.Location = new System.Drawing.Point(309, 284);
-            textBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new System.Drawing.Size(116, 23);
-            textBox2.TabIndex = 23;
-            textBox2.Text = "30";
+            titleBarHeightTextBox.Location = new System.Drawing.Point(309, 284);
+            titleBarHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            titleBarHeightTextBox.Name = "titleBarHeightTextBox";
+            titleBarHeightTextBox.Size = new System.Drawing.Size(116, 23);
+            titleBarHeightTextBox.TabIndex = 23;
+            titleBarHeightTextBox.Text = "30";
             // 
             // label7
             // 
@@ -388,15 +388,15 @@
             label8.TabIndex = 20;
             label8.Text = "Full Frame Interval (seconds)";
             // 
-            // textBox6
+            // fullFrameIntervalTextBox
             // 
-            textBox6.Location = new System.Drawing.Point(309, 353);
-            textBox6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            textBox6.Name = "textBox6";
-            textBox6.Size = new System.Drawing.Size(116, 23);
-            textBox6.TabIndex = 19;
-            textBox6.Text = "30";
-            textBox6.TextChanged += textBox6_TextChanged;
+            fullFrameIntervalTextBox.Location = new System.Drawing.Point(309, 353);
+            fullFrameIntervalTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fullFrameIntervalTextBox.Name = "fullFrameIntervalTextBox";
+            fullFrameIntervalTextBox.Size = new System.Drawing.Size(116, 23);
+            fullFrameIntervalTextBox.TabIndex = 19;
+            fullFrameIntervalTextBox.Text = "30";
+            fullFrameIntervalTextBox.TextChanged += fullFrameIntervalTextBox_TextChanged;
             // 
             // checkBox4
             // 
@@ -440,7 +440,7 @@
             targetFramerateTextBox.Size = new System.Drawing.Size(116, 23);
             targetFramerateTextBox.TabIndex = 13;
             targetFramerateTextBox.Text = "36";
-            targetFramerateTextBox.TextChanged += textBox4_TextChanged;
+            targetFramerateTextBox.TextChanged += targetFramerateTextBox_TextChanged;
             // 
             // label4
             // 
@@ -460,7 +460,7 @@
             brightnessTextBox.Size = new System.Drawing.Size(116, 23);
             brightnessTextBox.TabIndex = 9;
             brightnessTextBox.Text = "1";
-            brightnessTextBox.TextChanged += textBox2_TextChanged;
+            brightnessTextBox.TextChanged += brightnessTextBox_TextChanged;
             // 
             // label3
             // 
@@ -499,7 +499,7 @@
             tabPage2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tabPage2.Size = new System.Drawing.Size(797, 477);
+            tabPage2.Size = new System.Drawing.Size(912, 479);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
@@ -544,11 +544,11 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox fullFrameIntervalTextBox;
         private System.Windows.Forms.CheckBox previewCheckBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox titleBarHeightTextBox;
         private System.Windows.Forms.Label publishedFPSLabel;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.CheckBox rowExpansionCheckBox;
