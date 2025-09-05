@@ -1,8 +1,4 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs
+﻿/.vs
 
 *.exe
 *.suo
@@ -27,12 +23,12 @@
 /ResoniteGameStreamerApp/ResoniteGameStreamerApp/.vs
 /ResoniteGameStreamerApp/.vs
 /ResoniteGameStreamerApp/packages
-/ResoniteGameStreamerApp/ResoniteGBAppTests/.vs
-/ResoniteGameStreamerApp/ResoniteGBAppTests/bin/Debug
-/ResoniteGameStreamerApp/ResoniteGBAppTests/obj/Debug
-/ResoniteGameStreamerApp/ResoniteGBApp/.vs
-/ResoniteGameStreamerApp/ResoniteGBApp/obj/Debug
-/ResoniteGameStreamerMod/ResoniteGBMod/bin/Debug
-/ResoniteGameStreamerMod/ResoniteGBMod/obj
+/ResoniteGameStreamerApp/ResoniteGameStreamerAppTests/.vs
+/ResoniteGameStreamerApp/ResoniteGameStreamerAppTests/bin
+/ResoniteGameStreamerApp/ResoniteGameStreamerAppTests/obj
+/ResoniteGameStreamerApp/ResoniteGameStreamerApp/.vs
+/ResoniteGameStreamerApp/ResoniteGameStreamerApp/obj
+/ResoniteGameStreamerMod/ResoniteGameStreamerMod/bin/Debug
+/ResoniteGameStreamerMod/ResoniteGameStreamerMod/obj
 /ResoniteGameStreamerApp/ResoniteGameStreamerAppTests/bin/Release/net9.0-windows
 /ResoniteGameStreamerApp/ResoniteGameStreamerAppTests/obj/Release/net9.0-windows
