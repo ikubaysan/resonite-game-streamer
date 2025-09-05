@@ -36,6 +36,10 @@
             pictureBox1 = new System.Windows.Forms.PictureBox();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            avgPixelsLabel = new System.Windows.Forms.Label();
+            label16 = new System.Windows.Forms.Label();
+            avgFPSLabel = new System.Windows.Forms.Label();
+            label14 = new System.Windows.Forms.Label();
             setEmittedCanvasScaleFactorButton = new System.Windows.Forms.Button();
             setEmittedCanvasScaleFactorLabel = new System.Windows.Forms.Label();
             setEmittedCanvasScaleFactorTextBox = new System.Windows.Forms.TextBox();
@@ -82,7 +86,7 @@
             // 
             // targetWindowTextBox
             // 
-            targetWindowTextBox.Location = new System.Drawing.Point(222, 473);
+            targetWindowTextBox.Location = new System.Drawing.Point(223, 440);
             targetWindowTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             targetWindowTextBox.Name = "targetWindowTextBox";
             targetWindowTextBox.Size = new System.Drawing.Size(116, 23);
@@ -97,7 +101,7 @@
             // 
             // button1
             // 
-            button1.Location = new System.Drawing.Point(13, 222);
+            button1.Location = new System.Drawing.Point(14, 189);
             button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(88, 27);
@@ -107,7 +111,7 @@
             // 
             // panel1
             // 
-            panel1.Location = new System.Drawing.Point(15, 100);
+            panel1.Location = new System.Drawing.Point(16, 67);
             panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panel1.Name = "panel1";
             panel1.Size = new System.Drawing.Size(116, 115);
@@ -130,11 +134,15 @@
             tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1050, 566);
+            tabControl1.Size = new System.Drawing.Size(1030, 524);
             tabControl1.TabIndex = 6;
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(avgPixelsLabel);
+            tabPage1.Controls.Add(label16);
+            tabPage1.Controls.Add(avgFPSLabel);
+            tabPage1.Controls.Add(label14);
             tabPage1.Controls.Add(setEmittedCanvasScaleFactorButton);
             tabPage1.Controls.Add(setEmittedCanvasScaleFactorLabel);
             tabPage1.Controls.Add(setEmittedCanvasScaleFactorTextBox);
@@ -181,15 +189,55 @@
             tabPage1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tabPage1.Size = new System.Drawing.Size(1042, 538);
+            tabPage1.Size = new System.Drawing.Size(1022, 496);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "tabPage1";
             tabPage1.UseVisualStyleBackColor = true;
             tabPage1.Click += tabPage1_Click;
             // 
+            // avgPixelsLabel
+            // 
+            avgPixelsLabel.AutoSize = true;
+            avgPixelsLabel.Location = new System.Drawing.Point(574, 44);
+            avgPixelsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            avgPixelsLabel.Name = "avgPixelsLabel";
+            avgPixelsLabel.Size = new System.Drawing.Size(13, 15);
+            avgPixelsLabel.TabIndex = 50;
+            avgPixelsLabel.Text = "0";
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Location = new System.Drawing.Point(506, 44);
+            label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label16.Name = "label16";
+            label16.Size = new System.Drawing.Size(59, 15);
+            label16.TabIndex = 49;
+            label16.Text = "Avg (10s):";
+            // 
+            // avgFPSLabel
+            // 
+            avgFPSLabel.AutoSize = true;
+            avgFPSLabel.Location = new System.Drawing.Point(574, 12);
+            avgFPSLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            avgFPSLabel.Name = "avgFPSLabel";
+            avgFPSLabel.Size = new System.Drawing.Size(13, 15);
+            avgFPSLabel.TabIndex = 48;
+            avgFPSLabel.Text = "0";
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new System.Drawing.Point(506, 12);
+            label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label14.Name = "label14";
+            label14.Size = new System.Drawing.Size(59, 15);
+            label14.TabIndex = 47;
+            label14.Text = "Avg (10s):";
+            // 
             // setEmittedCanvasScaleFactorButton
             // 
-            setEmittedCanvasScaleFactorButton.Location = new System.Drawing.Point(272, 201);
+            setEmittedCanvasScaleFactorButton.Location = new System.Drawing.Point(297, 167);
             setEmittedCanvasScaleFactorButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             setEmittedCanvasScaleFactorButton.Name = "setEmittedCanvasScaleFactorButton";
             setEmittedCanvasScaleFactorButton.Size = new System.Drawing.Size(69, 27);
@@ -201,7 +249,7 @@
             // setEmittedCanvasScaleFactorLabel
             // 
             setEmittedCanvasScaleFactorLabel.AutoSize = true;
-            setEmittedCanvasScaleFactorLabel.Location = new System.Drawing.Point(191, 173);
+            setEmittedCanvasScaleFactorLabel.Location = new System.Drawing.Point(192, 140);
             setEmittedCanvasScaleFactorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             setEmittedCanvasScaleFactorLabel.Name = "setEmittedCanvasScaleFactorLabel";
             setEmittedCanvasScaleFactorLabel.Size = new System.Drawing.Size(174, 15);
@@ -210,10 +258,10 @@
             // 
             // setEmittedCanvasScaleFactorTextBox
             // 
-            setEmittedCanvasScaleFactorTextBox.Location = new System.Drawing.Point(213, 204);
+            setEmittedCanvasScaleFactorTextBox.Location = new System.Drawing.Point(192, 171);
             setEmittedCanvasScaleFactorTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             setEmittedCanvasScaleFactorTextBox.Name = "setEmittedCanvasScaleFactorTextBox";
-            setEmittedCanvasScaleFactorTextBox.Size = new System.Drawing.Size(51, 23);
+            setEmittedCanvasScaleFactorTextBox.Size = new System.Drawing.Size(97, 23);
             setEmittedCanvasScaleFactorTextBox.TabIndex = 44;
             setEmittedCanvasScaleFactorTextBox.Text = "1";
             setEmittedCanvasScaleFactorTextBox.TextChanged += setEmittedCanvasScaleFactorTextBox_TextChanged;
@@ -221,7 +269,7 @@
             // emittedCanvasWidthLabel
             // 
             emittedCanvasWidthLabel.AutoSize = true;
-            emittedCanvasWidthLabel.Location = new System.Drawing.Point(213, 302);
+            emittedCanvasWidthLabel.Location = new System.Drawing.Point(214, 269);
             emittedCanvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             emittedCanvasWidthLabel.Name = "emittedCanvasWidthLabel";
             emittedCanvasWidthLabel.Size = new System.Drawing.Size(124, 15);
@@ -230,7 +278,7 @@
             // 
             // emittedCanvasWidthTextBox
             // 
-            emittedCanvasWidthTextBox.Location = new System.Drawing.Point(213, 324);
+            emittedCanvasWidthTextBox.Location = new System.Drawing.Point(214, 291);
             emittedCanvasWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             emittedCanvasWidthTextBox.Name = "emittedCanvasWidthTextBox";
             emittedCanvasWidthTextBox.Size = new System.Drawing.Size(116, 23);
@@ -241,7 +289,7 @@
             // emittedCanvasHeightLabel
             // 
             emittedCanvasHeightLabel.AutoSize = true;
-            emittedCanvasHeightLabel.Location = new System.Drawing.Point(213, 362);
+            emittedCanvasHeightLabel.Location = new System.Drawing.Point(214, 329);
             emittedCanvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             emittedCanvasHeightLabel.Name = "emittedCanvasHeightLabel";
             emittedCanvasHeightLabel.Size = new System.Drawing.Size(128, 15);
@@ -250,7 +298,7 @@
             // 
             // emittedCanvasHeightTextBox
             // 
-            emittedCanvasHeightTextBox.Location = new System.Drawing.Point(213, 380);
+            emittedCanvasHeightTextBox.Location = new System.Drawing.Point(214, 347);
             emittedCanvasHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             emittedCanvasHeightTextBox.Name = "emittedCanvasHeightTextBox";
             emittedCanvasHeightTextBox.Size = new System.Drawing.Size(116, 23);
@@ -261,7 +309,7 @@
             // colorModeLabel
             // 
             colorModeLabel.AutoSize = true;
-            colorModeLabel.Location = new System.Drawing.Point(863, 444);
+            colorModeLabel.Location = new System.Drawing.Point(875, 411);
             colorModeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             colorModeLabel.Name = "colorModeLabel";
             colorModeLabel.Size = new System.Drawing.Size(70, 15);
@@ -272,7 +320,7 @@
             // 
             colorModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             colorModeComboBox.FormattingEnabled = true;
-            colorModeComboBox.Location = new System.Drawing.Point(829, 477);
+            colorModeComboBox.Location = new System.Drawing.Point(841, 444);
             colorModeComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             colorModeComboBox.Name = "colorModeComboBox";
             colorModeComboBox.Size = new System.Drawing.Size(140, 23);
@@ -283,7 +331,7 @@
             // 
             consolePresetComboBox.FormattingEnabled = true;
             consolePresetComboBox.Items.AddRange(new object[] { "None", "Gameboy", "NES", "Doom" });
-            consolePresetComboBox.Location = new System.Drawing.Point(15, 473);
+            consolePresetComboBox.Location = new System.Drawing.Point(16, 440);
             consolePresetComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             consolePresetComboBox.Name = "consolePresetComboBox";
             consolePresetComboBox.Size = new System.Drawing.Size(116, 23);
@@ -293,7 +341,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new System.Drawing.Point(30, 440);
+            label13.Location = new System.Drawing.Point(31, 407);
             label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(85, 15);
@@ -303,7 +351,7 @@
             // captureCanvasWidthLabel
             // 
             captureCanvasWidthLabel.AutoSize = true;
-            captureCanvasWidthLabel.Location = new System.Drawing.Point(15, 302);
+            captureCanvasWidthLabel.Location = new System.Drawing.Point(16, 269);
             captureCanvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             captureCanvasWidthLabel.Name = "captureCanvasWidthLabel";
             captureCanvasWidthLabel.Size = new System.Drawing.Size(125, 15);
@@ -312,7 +360,7 @@
             // 
             // canvasWidthTextBox
             // 
-            canvasWidthTextBox.Location = new System.Drawing.Point(15, 324);
+            canvasWidthTextBox.Location = new System.Drawing.Point(16, 291);
             canvasWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             canvasWidthTextBox.Name = "canvasWidthTextBox";
             canvasWidthTextBox.Size = new System.Drawing.Size(116, 23);
@@ -323,7 +371,7 @@
             // captureCanvasHeightLabel
             // 
             captureCanvasHeightLabel.AutoSize = true;
-            captureCanvasHeightLabel.Location = new System.Drawing.Point(15, 362);
+            captureCanvasHeightLabel.Location = new System.Drawing.Point(16, 329);
             captureCanvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             captureCanvasHeightLabel.Name = "captureCanvasHeightLabel";
             captureCanvasHeightLabel.Size = new System.Drawing.Size(129, 15);
@@ -332,7 +380,7 @@
             // 
             // canvasHeightTextBox
             // 
-            canvasHeightTextBox.Location = new System.Drawing.Point(15, 380);
+            canvasHeightTextBox.Location = new System.Drawing.Point(16, 347);
             canvasHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             canvasHeightTextBox.Name = "canvasHeightTextBox";
             canvasHeightTextBox.Size = new System.Drawing.Size(116, 23);
@@ -343,7 +391,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(433, 246);
+            label11.Location = new System.Drawing.Point(434, 213);
             label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(77, 15);
@@ -352,7 +400,7 @@
             // 
             // borderWidthTextBox
             // 
-            borderWidthTextBox.Location = new System.Drawing.Point(427, 268);
+            borderWidthTextBox.Location = new System.Drawing.Point(428, 231);
             borderWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             borderWidthTextBox.Name = "borderWidthTextBox";
             borderWidthTextBox.Size = new System.Drawing.Size(116, 23);
@@ -363,7 +411,7 @@
             // previewPixelsChangedCountLabel
             // 
             previewPixelsChangedCountLabel.AutoSize = true;
-            previewPixelsChangedCountLabel.Location = new System.Drawing.Point(505, 54);
+            previewPixelsChangedCountLabel.Location = new System.Drawing.Point(485, 44);
             previewPixelsChangedCountLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             previewPixelsChangedCountLabel.Name = "previewPixelsChangedCountLabel";
             previewPixelsChangedCountLabel.Size = new System.Drawing.Size(13, 15);
@@ -373,7 +421,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new System.Drawing.Point(410, 54);
+            label12.Location = new System.Drawing.Point(393, 44);
             label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(91, 15);
@@ -383,7 +431,7 @@
             // rowExpansionCheckBox
             // 
             rowExpansionCheckBox.AutoSize = true;
-            rowExpansionCheckBox.Location = new System.Drawing.Point(416, 196);
+            rowExpansionCheckBox.Location = new System.Drawing.Point(417, 163);
             rowExpansionCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             rowExpansionCheckBox.Name = "rowExpansionCheckBox";
             rowExpansionCheckBox.Size = new System.Drawing.Size(106, 19);
@@ -394,7 +442,7 @@
             // publishedFPSLabel
             // 
             publishedFPSLabel.AutoSize = true;
-            publishedFPSLabel.Location = new System.Drawing.Point(505, 22);
+            publishedFPSLabel.Location = new System.Drawing.Point(485, 12);
             publishedFPSLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             publishedFPSLabel.Name = "publishedFPSLabel";
             publishedFPSLabel.Size = new System.Drawing.Size(13, 15);
@@ -404,7 +452,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(410, 22);
+            label10.Location = new System.Drawing.Point(393, 12);
             label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(84, 15);
@@ -414,7 +462,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new System.Drawing.Point(433, 306);
+            label9.Location = new System.Drawing.Point(428, 269);
             label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(88, 15);
@@ -423,7 +471,7 @@
             // 
             // titleBarHeightTextBox
             // 
-            titleBarHeightTextBox.Location = new System.Drawing.Point(427, 328);
+            titleBarHeightTextBox.Location = new System.Drawing.Point(424, 291);
             titleBarHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             titleBarHeightTextBox.Name = "titleBarHeightTextBox";
             titleBarHeightTextBox.Size = new System.Drawing.Size(116, 23);
@@ -433,7 +481,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(229, 440);
+            label7.Location = new System.Drawing.Point(230, 407);
             label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(86, 15);
@@ -445,7 +493,7 @@
             previewCheckBox.AutoSize = true;
             previewCheckBox.Checked = true;
             previewCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            previewCheckBox.Location = new System.Drawing.Point(865, 401);
+            previewCheckBox.Location = new System.Drawing.Point(877, 368);
             previewCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             previewCheckBox.Name = "previewCheckBox";
             previewCheckBox.Size = new System.Drawing.Size(68, 34);
@@ -456,7 +504,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(416, 366);
+            label8.Location = new System.Drawing.Point(406, 329);
             label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(158, 15);
@@ -465,7 +513,7 @@
             // 
             // fullFrameIntervalTextBox
             // 
-            fullFrameIntervalTextBox.Location = new System.Drawing.Point(427, 397);
+            fullFrameIntervalTextBox.Location = new System.Drawing.Point(424, 347);
             fullFrameIntervalTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             fullFrameIntervalTextBox.Name = "fullFrameIntervalTextBox";
             fullFrameIntervalTextBox.Size = new System.Drawing.Size(116, 23);
@@ -476,7 +524,7 @@
             // checkBox4
             // 
             checkBox4.AutoSize = true;
-            checkBox4.Location = new System.Drawing.Point(416, 154);
+            checkBox4.Location = new System.Drawing.Point(417, 121);
             checkBox4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBox4.Name = "checkBox4";
             checkBox4.Size = new System.Drawing.Size(174, 34);
@@ -489,7 +537,7 @@
             checkBox3.AutoSize = true;
             checkBox3.Checked = true;
             checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            checkBox3.Location = new System.Drawing.Point(416, 112);
+            checkBox3.Location = new System.Drawing.Point(417, 79);
             checkBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBox3.Name = "checkBox3";
             checkBox3.Size = new System.Drawing.Size(123, 34);
@@ -500,7 +548,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(424, 444);
+            label6.Location = new System.Drawing.Point(425, 411);
             label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(95, 15);
@@ -509,7 +557,7 @@
             // 
             // targetFramerateTextBox
             // 
-            targetFramerateTextBox.Location = new System.Drawing.Point(427, 477);
+            targetFramerateTextBox.Location = new System.Drawing.Point(428, 444);
             targetFramerateTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             targetFramerateTextBox.Name = "targetFramerateTextBox";
             targetFramerateTextBox.Size = new System.Drawing.Size(116, 23);
@@ -520,7 +568,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(704, 444);
+            label4.Location = new System.Drawing.Point(716, 411);
             label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(62, 15);
@@ -529,7 +577,7 @@
             // 
             // brightnessTextBox
             // 
-            brightnessTextBox.Location = new System.Drawing.Point(682, 477);
+            brightnessTextBox.Location = new System.Drawing.Point(694, 444);
             brightnessTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             brightnessTextBox.Name = "brightnessTextBox";
             brightnessTextBox.Size = new System.Drawing.Size(116, 23);
@@ -540,7 +588,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(13, 22);
+            label3.Location = new System.Drawing.Point(16, 22);
             label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(117, 15);
@@ -550,7 +598,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new System.Drawing.Point(704, 401);
+            checkBox1.Location = new System.Drawing.Point(716, 368);
             checkBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new System.Drawing.Size(68, 34);
@@ -561,7 +609,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(767, 26);
+            label2.Location = new System.Drawing.Point(785, 22);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(92, 15);
@@ -571,7 +619,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(15, 252);
+            label1.Location = new System.Drawing.Point(16, 219);
             label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(134, 15);
@@ -584,7 +632,7 @@
             tabPage2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tabPage2.Size = new System.Drawing.Size(963, 517);
+            tabPage2.Size = new System.Drawing.Size(1042, 538);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
@@ -593,7 +641,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1053, 578);
+            ClientSize = new System.Drawing.Size(1037, 532);
             Controls.Add(tabControl1);
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "MainForm";
@@ -656,6 +704,10 @@
         private System.Windows.Forms.TextBox setEmittedCanvasScaleFactorTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button setEmittedCanvasScaleFactorButton;
+        private System.Windows.Forms.Label avgFPSLabel;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label avgPixelsLabel;
+        private System.Windows.Forms.Label label16;
     }
 }
 

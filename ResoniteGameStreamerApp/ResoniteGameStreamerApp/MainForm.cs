@@ -47,6 +47,17 @@ namespace ResoniteGameStreamerApp
         private AppSettings _settings = new AppSettings();
         private bool _isRestoringSettings = false;
 
+        // Rolling average window (seconds) — change here, nowhere else.
+        private const double AverageWindowSeconds = 10.0;
+
+        // Rolling windows and sums
+        private readonly Queue<DateTime> _avgFpsWindow = new Queue<DateTime>();
+        private readonly Queue<(DateTime time, int pixels)> _avgPixelsWindow = new Queue<(DateTime, int)>();
+        private long _avgPixelsSum = 0;
+
+        // To avoid double-counting pixels for the same frame
+        private int _lastPixelsOffsetCounted = int.MinValue;
+
         public MainForm()
         {
             InitializeComponent();
@@ -140,6 +151,7 @@ namespace ResoniteGameStreamerApp
         {
             publishedFPSLabel.Text = _frameCounter.ToString();
             _frameCounter = 0;
+            PruneAndUpdateAverages(DateTime.Now);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -184,10 +196,27 @@ namespace ResoniteGameStreamerApp
             MemoryMappedFileManager.ReadPixelDataFromMemoryMappedFile();
             if (MemoryMappedFileManager.readPixelData == null) return;
 
+            if (MemoryMappedFileManager.readPixelDataLength >= 0)
+            {
+                var now = DateTime.Now;
+                _avgFpsWindow.Enqueue(now);
+            }
+
             if (previewCheckBox.Checked)
             {
                 pictureBox1.Image = FrameData.SetPixelDataToBitmap();
                 previewPixelsChangedCountLabel.Text = latestPreviewPixelsChangedCount.ToString();
+
+                int currentOffset = MemoryMappedFileManager.latestReceivedFrameMillisecondsOffset;
+                if (currentOffset != _lastPixelsOffsetCounted && MemoryMappedFileManager.readPixelDataLength != -1)
+                {
+                    var now = DateTime.Now;
+                    int px = latestPreviewPixelsChangedCount;
+
+                    _avgPixelsWindow.Enqueue((now, px));
+                    _avgPixelsSum += px;
+                    _lastPixelsOffsetCounted = currentOffset;
+                }
             }
 
             if (checkBox4.Checked)
@@ -207,6 +236,29 @@ namespace ResoniteGameStreamerApp
             SettingsManager.Save(_settings);
             MemoryMappedFileManager._pixelDataMemoryMappedFile?.Dispose();
         }
+
+        private void PruneAndUpdateAverages(DateTime now)
+        {
+            var threshold = now - TimeSpan.FromSeconds(AverageWindowSeconds);
+
+            // FPS window
+            while (_avgFpsWindow.Count > 0 && _avgFpsWindow.Peek() < threshold)
+                _avgFpsWindow.Dequeue();
+
+            // Pixels window (maintain running sum)
+            while (_avgPixelsWindow.Count > 0 && _avgPixelsWindow.Peek().time < threshold)
+                _avgPixelsSum -= _avgPixelsWindow.Dequeue().pixels;
+
+            // Compute and display
+            double avgFps = _avgFpsWindow.Count / AverageWindowSeconds;
+            avgFPSLabel.Text = avgFps.ToString("0.0");
+
+            double avgPixelsPerFrame = _avgPixelsWindow.Count > 0
+                ? (double)_avgPixelsSum / _avgPixelsWindow.Count
+                : 0.0;
+            avgPixelsLabel.Text = avgPixelsPerFrame.ToString("0");
+        }
+
 
         private void targetFramerateTextBox_TextChanged(object sender, EventArgs e)
         {
