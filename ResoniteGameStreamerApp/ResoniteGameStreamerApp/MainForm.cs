@@ -73,8 +73,8 @@ namespace ResoniteGameStreamerApp
 
             if (canvasWidthTextBox != null) canvasWidthTextBox.Text = _settings.FrameWidth.ToString();
             if (canvasHeightTextBox != null) canvasHeightTextBox.Text = _settings.FrameHeight.ToString();
-            if (previewCanvasWidthTextBox != null) previewCanvasWidthTextBox.Text = PREVIEW_WIDTH.ToString();
-            if (previewCanvasHeightTextBox != null) previewCanvasHeightTextBox.Text = PREVIEW_HEIGHT.ToString();
+            if (emittedCanvasWidthTextBox != null) emittedCanvasWidthTextBox.Text = PREVIEW_WIDTH.ToString();
+            if (emittedCanvasHeightTextBox != null) emittedCanvasHeightTextBox.Text = PREVIEW_HEIGHT.ToString();
             if (targetFramerateTextBox != null) targetFramerateTextBox.Text = _settings.TargetFramerate.ToString();
             if (targetWindowTextBox != null) targetWindowTextBox.Text = _settings.TargetWindowTitle;
             if (borderWidthTextBox != null) borderWidthTextBox.Text = _settings.BorderWidth.ToString();
@@ -289,8 +289,8 @@ namespace ResoniteGameStreamerApp
                 targetWindowTextBox.Text = "mGBA";
                 canvasWidthTextBox.Text = "160";
                 canvasHeightTextBox.Text = "144";
-                previewCanvasWidthTextBox.Text = "160";
-                previewCanvasHeightTextBox.Text = "144";
+                emittedCanvasWidthTextBox.Text = "160";
+                emittedCanvasHeightTextBox.Text = "144";
             }
 
             if (selectedValue == "Doom")
@@ -298,8 +298,8 @@ namespace ResoniteGameStreamerApp
                 targetWindowTextBox.Text = "Chocolate Doom";
                 canvasWidthTextBox.Text = "320";
                 canvasHeightTextBox.Text = "200";
-                previewCanvasWidthTextBox.Text = "320";
-                previewCanvasHeightTextBox.Text = "200";
+                emittedCanvasWidthTextBox.Text = "320";
+                emittedCanvasHeightTextBox.Text = "200";
             }
         }
 
@@ -321,10 +321,10 @@ namespace ResoniteGameStreamerApp
 
         }
 
-        private void previewCanvasWidthTextBox_TextChanged(object sender, EventArgs e)
+        private void emittedCanvasWidthTextBox_TextChanged(object sender, EventArgs e)
         {
             if (_isRestoringSettings) return;
-            if (int.TryParse(previewCanvasWidthTextBox.Text, out int w) &&
+            if (int.TryParse(emittedCanvasWidthTextBox.Text, out int w) &&
                 w >= 100 && w <= 999)
             {
                 PREVIEW_WIDTH = w;
@@ -336,10 +336,10 @@ namespace ResoniteGameStreamerApp
             }
         }
 
-        private void previewCanvasHeightTextBox_TextChanged(object sender, EventArgs e)
+        private void emittedCanvasHeightTextBox_TextChanged(object sender, EventArgs e)
         {
             if (_isRestoringSettings) return;
-            if (int.TryParse(previewCanvasHeightTextBox.Text, out int h) &&
+            if (int.TryParse(emittedCanvasHeightTextBox.Text, out int h) &&
                 h >= 100 && h <= 999)
             {
                 PREVIEW_HEIGHT = h;

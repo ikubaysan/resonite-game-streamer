@@ -37,6 +37,10 @@
             label1 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            emittedCanvasWidthLabel = new System.Windows.Forms.Label();
+            emittedCanvasWidthTextBox = new System.Windows.Forms.TextBox();
+            emittedCanvasHeightLabel = new System.Windows.Forms.Label();
+            emittedCanvasHeightTextBox = new System.Windows.Forms.TextBox();
             colorModeLabel = new System.Windows.Forms.Label();
             colorModeComboBox = new System.Windows.Forms.ComboBox();
             consolePresetComboBox = new System.Windows.Forms.ComboBox();
@@ -68,10 +72,6 @@
             checkBox1 = new System.Windows.Forms.CheckBox();
             label2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
-            previewCanvasWidthLabel = new System.Windows.Forms.Label();
-            previewCanvasWidthTextBox = new System.Windows.Forms.TextBox();
-            previewCanvasHeightLabel = new System.Windows.Forms.Label();
-            previewCanvasHeightTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -142,10 +142,10 @@
             // 
             // tabPage1
             // 
-            tabPage1.Controls.Add(previewCanvasWidthLabel);
-            tabPage1.Controls.Add(previewCanvasWidthTextBox);
-            tabPage1.Controls.Add(previewCanvasHeightLabel);
-            tabPage1.Controls.Add(previewCanvasHeightTextBox);
+            tabPage1.Controls.Add(emittedCanvasWidthLabel);
+            tabPage1.Controls.Add(emittedCanvasWidthTextBox);
+            tabPage1.Controls.Add(emittedCanvasHeightLabel);
+            tabPage1.Controls.Add(emittedCanvasHeightTextBox);
             tabPage1.Controls.Add(colorModeLabel);
             tabPage1.Controls.Add(colorModeComboBox);
             tabPage1.Controls.Add(consolePresetComboBox);
@@ -190,6 +190,46 @@
             tabPage1.Text = "tabPage1";
             tabPage1.UseVisualStyleBackColor = true;
             tabPage1.Click += tabPage1_Click;
+            // 
+            // emittedCanvasWidthLabel
+            // 
+            emittedCanvasWidthLabel.AutoSize = true;
+            emittedCanvasWidthLabel.Location = new System.Drawing.Point(157, 262);
+            emittedCanvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            emittedCanvasWidthLabel.Name = "emittedCanvasWidthLabel";
+            emittedCanvasWidthLabel.Size = new System.Drawing.Size(124, 15);
+            emittedCanvasWidthLabel.TabIndex = 43;
+            emittedCanvasWidthLabel.Text = "Emitted Canvas Width";
+            // 
+            // emittedCanvasWidthTextBox
+            // 
+            emittedCanvasWidthTextBox.Location = new System.Drawing.Point(157, 284);
+            emittedCanvasWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            emittedCanvasWidthTextBox.Name = "emittedCanvasWidthTextBox";
+            emittedCanvasWidthTextBox.Size = new System.Drawing.Size(116, 23);
+            emittedCanvasWidthTextBox.TabIndex = 40;
+            emittedCanvasWidthTextBox.Text = "160";
+            emittedCanvasWidthTextBox.TextChanged += emittedCanvasWidthTextBox_TextChanged;
+            // 
+            // emittedCanvasHeightLabel
+            // 
+            emittedCanvasHeightLabel.AutoSize = true;
+            emittedCanvasHeightLabel.Location = new System.Drawing.Point(157, 322);
+            emittedCanvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            emittedCanvasHeightLabel.Name = "emittedCanvasHeightLabel";
+            emittedCanvasHeightLabel.Size = new System.Drawing.Size(128, 15);
+            emittedCanvasHeightLabel.TabIndex = 41;
+            emittedCanvasHeightLabel.Text = "Emitted Canvas Height";
+            // 
+            // emittedCanvasHeightTextBox
+            // 
+            emittedCanvasHeightTextBox.Location = new System.Drawing.Point(157, 340);
+            emittedCanvasHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            emittedCanvasHeightTextBox.Name = "emittedCanvasHeightTextBox";
+            emittedCanvasHeightTextBox.Size = new System.Drawing.Size(116, 23);
+            emittedCanvasHeightTextBox.TabIndex = 42;
+            emittedCanvasHeightTextBox.Text = "144";
+            emittedCanvasHeightTextBox.TextChanged += emittedCanvasHeightTextBox_TextChanged;
             // 
             // colorModeLabel
             // 
@@ -512,46 +552,6 @@
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
             // 
-            // previewCanvasWidthLabel
-            // 
-            previewCanvasWidthLabel.AutoSize = true;
-            previewCanvasWidthLabel.Location = new System.Drawing.Point(157, 262);
-            previewCanvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            previewCanvasWidthLabel.Name = "previewCanvasWidthLabel";
-            previewCanvasWidthLabel.Size = new System.Drawing.Size(124, 15);
-            previewCanvasWidthLabel.TabIndex = 43;
-            previewCanvasWidthLabel.Text = "Preview Canvas Width";
-            // 
-            // previewCanvasWidthTextBox
-            // 
-            previewCanvasWidthTextBox.Location = new System.Drawing.Point(157, 284);
-            previewCanvasWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            previewCanvasWidthTextBox.Name = "previewCanvasWidthTextBox";
-            previewCanvasWidthTextBox.Size = new System.Drawing.Size(116, 23);
-            previewCanvasWidthTextBox.TabIndex = 40;
-            previewCanvasWidthTextBox.Text = "160";
-            previewCanvasWidthTextBox.TextChanged += previewCanvasWidthTextBox_TextChanged;
-            // 
-            // previewCanvasHeightLabel
-            // 
-            previewCanvasHeightLabel.AutoSize = true;
-            previewCanvasHeightLabel.Location = new System.Drawing.Point(157, 322);
-            previewCanvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            previewCanvasHeightLabel.Name = "previewCanvasHeightLabel";
-            previewCanvasHeightLabel.Size = new System.Drawing.Size(128, 15);
-            previewCanvasHeightLabel.TabIndex = 41;
-            previewCanvasHeightLabel.Text = "Preview Canvas Height";
-            // 
-            // previewCanvasHeightTextBox
-            // 
-            previewCanvasHeightTextBox.Location = new System.Drawing.Point(157, 340);
-            previewCanvasHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            previewCanvasHeightTextBox.Name = "previewCanvasHeightTextBox";
-            previewCanvasHeightTextBox.Size = new System.Drawing.Size(116, 23);
-            previewCanvasHeightTextBox.TabIndex = 42;
-            previewCanvasHeightTextBox.Text = "144";
-            previewCanvasHeightTextBox.TextChanged += previewCanvasHeightTextBox_TextChanged;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -612,10 +612,10 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label colorModeLabel;
         private System.Windows.Forms.ComboBox colorModeComboBox;
-        private System.Windows.Forms.Label previewCanvasWidthLabel;
-        private System.Windows.Forms.TextBox previewCanvasWidthTextBox;
-        private System.Windows.Forms.Label previewCanvasHeightLabel;
-        private System.Windows.Forms.TextBox previewCanvasHeightTextBox;
+        private System.Windows.Forms.Label emittedCanvasWidthLabel;
+        private System.Windows.Forms.TextBox emittedCanvasWidthTextBox;
+        private System.Windows.Forms.Label emittedCanvasHeightLabel;
+        private System.Windows.Forms.TextBox emittedCanvasHeightTextBox;
     }
 }
 
