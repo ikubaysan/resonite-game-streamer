@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Set
@@ -19,9 +20,30 @@ from typing import Dict, List, Optional, Tuple, Set
 import pyvjoy
 from websocket_server import WebsocketServer
 
+# ------------------------------ Logging Setup ------------------------------
+
+def init_logging() -> logging.Logger:
+    # Force reset any prior logging config (Python 3.8+)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
+        datefmt="%H:%M:%S",
+        force=True,  # <— important: overrides earlier configs done by other libs
+    )
+    # Ensure there is at least one console handler on root (defensive)
+    root = logging.getLogger()
+    if not any(isinstance(h, logging.StreamHandler) for h in root.handlers):
+        sh = logging.StreamHandler()
+        sh.setFormatter(logging.Formatter("%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s", "%H:%M:%S"))
+        root.addHandler(sh)
+    # Optional: quiet overly chatty third-party loggers
+    logging.getLogger("websocket_server.websocket_server").setLevel(logging.WARNING)
+    return logging.getLogger("vjoy_ws_bridge")
+
+logger = init_logging()
+
 # ------------------------------ Constants ------------------------------
 
-# Regular buttons only (directions are handled as axes)
 BUTTON_MAP: Dict[str, int] = {
     "a": 1,
     "b": 2,
@@ -36,16 +58,13 @@ BUTTON_MAP: Dict[str, int] = {
 
 DIRECTIONS = ("u", "d", "l", "r")
 
-# vJoy axis constants & values
 AXIS_X = pyvjoy.HID_USAGE_X
 AXIS_Y = pyvjoy.HID_USAGE_Y
 AXIS_MIN = 0x0000
 AXIS_MID = 0x4000
 AXIS_MAX = 0x8000
 
-# Float comparisons: treat very small values as zero when parsing [x; y]
 EPS_ZERO = 1e-6
-
 RESET_ALL_MESSAGE = "RESET_ALL"
 
 # ------------------------------ Profiles & Rules ------------------------------
@@ -232,8 +251,7 @@ class VJoyWebSocketBridge:
     - Accepts messages as two-character pairs: <button><0|1>
       e.g. "a1" (press A), "y0" (release Y).
     - Also supports concatenated pairs in one message: e.g. "a1y1u0".
-    - NEW: Accepts axis messages like "[x; y]" or "[x, y]" where x,y are floats in [-1,1].
-           Sign determines active directions (diagonals supported).
+    - Also accepts axis messages like "[x; y]" or "[x, y]" where x,y are floats in [-1,1].
     """
     def __init__(self, host: str, port: int, profile: Optional[InputProfile]) -> None:
         self.host = host
@@ -251,28 +269,28 @@ class VJoyWebSocketBridge:
 
     def _on_client_connected(self, client: dict, server: WebsocketServer) -> None:
         ip, _ = client["address"]
-        print(f"Client({client['id']}) connected from IP: {ip}")
+        logger.info(f"Client({client['id']}) connected from IP: {ip}")
         self.controller.reset_all()
-        print("Inputs reset after new client connection")
+        logger.info("Inputs reset after new client connection")
 
     def _on_client_disconnected(self, client: dict, server: WebsocketServer) -> None:
-        print(f"Client({client['id']}) disconnected")
+        logger.info(f"Client({client['id']}) disconnected")
         self.controller.reset_all()
-        print("Inputs reset after client disconnection")
+        logger.info("Inputs reset after client disconnection")
 
     def _on_message(self, client: dict, server: WebsocketServer, message: str) -> None:
-        print(f"Received '{message}' from Client({client['id']})")
+        logger.info(f"Received '{message}' from Client({client['id']})")
 
         if message == RESET_ALL_MESSAGE:
             self.controller.reset_all()
-            print("Inputs reset on request")
+            logger.info("Inputs reset on request")
             return
 
         # First: bracketed vector form like "[0.543; -0.295]"
         if self._looks_like_axis_vector(message):
             parsed = self._parse_axis_vector(message)
             if parsed is None:
-                print(f"Ignoring invalid vector message '{message}' (failed to parse)")
+                logger.warning(f"Ignoring invalid vector message '{message}' (failed to parse)")
                 return
             x, y = parsed
             self._apply_axis_vector(client, server, x, y)
@@ -282,7 +300,7 @@ class VJoyWebSocketBridge:
         # Otherwise: fall back to two-char pairs
         pairs = self._parse_pairs(message)
         if not pairs:
-            print(f"Ignoring invalid message '{message}'")
+            logger.warning(f"Ignoring invalid message '{message}'")
             return
 
         for btn_name, action in pairs:
@@ -325,15 +343,15 @@ class VJoyWebSocketBridge:
     def _apply_axis_vector(self, client: dict, server: WebsocketServer, x: float, y: float) -> None:
         """
         Apply axis values → direction states:
-          Only activate a direction if abs(value) > 0.5
-          x > +0.5 => right=1
-          x < -0.5 => left=1
-          |x| <= 0.5 => horizontal neutral
-          y > +0.5 => up=1
-          y < -0.5 => down=1
-          |y| <= 0.5 => vertical neutral
+          Only activate a direction if abs(value) > THRESHOLD
+          x > +THRESHOLD => right=1
+          x < -THRESHOLD => left=1
+          |x| <= THRESHOLD => horizontal neutral
+          y > +THRESHOLD => up=1
+          y < -THRESHOLD => down=1
+          |y| <= THRESHOLD => vertical neutral
         """
-        THRESHOLD = 0.25
+        THRESHOLD = 0.25  # adjust as desired
 
         def dir_state(v: float, neg_name: str, pos_name: str) -> Tuple[str, str, int, int]:
             if v > THRESHOLD:
@@ -355,19 +373,18 @@ class VJoyWebSocketBridge:
             "d": d_val,
         }
 
-        # Pretty print what we're doing
+        # Log what we're doing
         active = [k for k, v in desired.items() if v == 1]
         if active:
-            print(f"[vector] x={x:.6f}, y={y:.6f} → activate {', '.join(active)} (>|0.5|); neutralize others")
+            logger.info(f"[vector] x={x:.6f}, y={y:.6f} → activate {', '.join(active)} (>threshold); neutralize others")
         else:
-            print(f"[vector] x={x:.6f}, y={y:.6f} → all neutral (within threshold)")
+            logger.info(f"[vector] x={x:.6f}, y={y:.6f} → all neutral (within threshold)")
 
         # Apply directions through the normal handler
         for dir_name in ("l", "r", "u", "d"):
             self._handle_one(client, server, dir_name, desired[dir_name])
 
         self._apply_combos()
-
 
     # ------------- Helpers: pair parsing -------------
 
@@ -396,7 +413,7 @@ class VJoyWebSocketBridge:
         # Apply profile rules (if any)
         reason = self.rules.should_block(btn_name, action, self.controller.state)
         if reason is not None:
-            print(f"Ignoring {btn_name}{action}: {reason}")
+            logger.info(f"Ignoring {btn_name}{action}: {reason}")
             server.send_message(client, f"Ignored: {btn_name}{action} ({reason})")
             return
 
@@ -405,7 +422,7 @@ class VJoyWebSocketBridge:
 
         # Route to axes for directions; buttons otherwise
         self.controller.set_button(btn_name, pressed)
-        print(f"{'Dir' if is_dir else 'Button'} {btn_name} {'pressed' if pressed else 'released'}")
+        logger.info(f"{'Dir' if is_dir else 'Button'} {btn_name} {'pressed' if pressed else 'released'}")
 
     def _apply_combos(self) -> None:
         desired = self.rules.desired_combo_emit_state(self.controller.state)
@@ -416,15 +433,15 @@ class VJoyWebSocketBridge:
             current = self.controller.state.get(emit_btn, 0)
             if want == 1 and current == 0:
                 self.controller.set_button(emit_btn, True)
-                print(f"[combo] '{emit_btn}' pressed (conditions met)")
+                logger.info(f"[combo] '{emit_btn}' pressed (conditions met)")
             elif want == 0 and current == 1:
                 self.controller.set_button(emit_btn, False)
-                print(f"[combo] '{emit_btn}' released (conditions no longer met)")
+                logger.info(f"[combo] '{emit_btn}' released (conditions no longer met)")
 
     # ------------- Run -------------
 
     def run_forever(self) -> None:
-        print(f"Server is running at ws://{self.host}:{self.port}")
+        logger.info(f"Server is running at ws://{self.host}:{self.port}")
         self.server.run_forever()
 
 # ------------------------------ CLI ------------------------------
@@ -439,7 +456,7 @@ def parse_args() -> argparse.Namespace:
 
 def _load_profile_from_path(path: Path) -> InputProfile:
     profile = InputProfile.load(path)
-    print(
+    logger.info(
         f"Loaded profile from {path} "
         f"(disabled={profile.disabled_buttons}, "
         f"mutual_exclusions={[f'{m.block}|while {m.while_}' for m in profile.mutual_exclusions]}, "
