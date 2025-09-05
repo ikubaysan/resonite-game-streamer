@@ -41,9 +41,9 @@
             colorModeComboBox = new System.Windows.Forms.ComboBox();
             consolePresetComboBox = new System.Windows.Forms.ComboBox();
             label13 = new System.Windows.Forms.Label();
-            canvasWidthLabel = new System.Windows.Forms.Label();
+            captureCanvasWidthLabel = new System.Windows.Forms.Label();
             canvasWidthTextBox = new System.Windows.Forms.TextBox();
-            canvasHeightLabel = new System.Windows.Forms.Label();
+            captureCanvasHeightLabel = new System.Windows.Forms.Label();
             canvasHeightTextBox = new System.Windows.Forms.TextBox();
             label11 = new System.Windows.Forms.Label();
             borderWidthTextBox = new System.Windows.Forms.TextBox();
@@ -75,7 +75,7 @@
             // 
             // targetWindowTextBox
             // 
-            targetWindowTextBox.Location = new System.Drawing.Point(146, 433);
+            targetWindowTextBox.Location = new System.Drawing.Point(166, 433);
             targetWindowTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             targetWindowTextBox.Name = "targetWindowTextBox";
             targetWindowTextBox.Size = new System.Drawing.Size(116, 23);
@@ -142,9 +142,9 @@
             tabPage1.Controls.Add(colorModeComboBox);
             tabPage1.Controls.Add(consolePresetComboBox);
             tabPage1.Controls.Add(label13);
-            tabPage1.Controls.Add(canvasWidthLabel);
+            tabPage1.Controls.Add(captureCanvasWidthLabel);
             tabPage1.Controls.Add(canvasWidthTextBox);
-            tabPage1.Controls.Add(canvasHeightLabel);
+            tabPage1.Controls.Add(captureCanvasHeightLabel);
             tabPage1.Controls.Add(canvasHeightTextBox);
             tabPage1.Controls.Add(label11);
             tabPage1.Controls.Add(borderWidthTextBox);
@@ -207,8 +207,8 @@
             // consolePresetComboBox
             // 
             consolePresetComboBox.FormattingEnabled = true;
-            consolePresetComboBox.Items.AddRange(new object[] { "Gameboy" });
-            consolePresetComboBox.Location = new System.Drawing.Point(4, 432);
+            consolePresetComboBox.Items.AddRange(new object[] { "None", "Gameboy", "NES", "Doom" });
+            consolePresetComboBox.Location = new System.Drawing.Point(9, 433);
             consolePresetComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             consolePresetComboBox.Name = "consolePresetComboBox";
             consolePresetComboBox.Size = new System.Drawing.Size(116, 23);
@@ -218,26 +218,26 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new System.Drawing.Point(9, 400);
+            label13.Location = new System.Drawing.Point(24, 400);
             label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(85, 15);
             label13.TabIndex = 36;
             label13.Text = "Console Preset";
             // 
-            // canvasWidthLabel
+            // captureCanvasWidthLabel
             // 
-            canvasWidthLabel.AutoSize = true;
-            canvasWidthLabel.Location = new System.Drawing.Point(9, 262);
-            canvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            canvasWidthLabel.Name = "canvasWidthLabel";
-            canvasWidthLabel.Size = new System.Drawing.Size(80, 15);
-            canvasWidthLabel.TabIndex = 35;
-            canvasWidthLabel.Text = "Canvas Width";
+            captureCanvasWidthLabel.AutoSize = true;
+            captureCanvasWidthLabel.Location = new System.Drawing.Point(9, 262);
+            captureCanvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            captureCanvasWidthLabel.Name = "captureCanvasWidthLabel";
+            captureCanvasWidthLabel.Size = new System.Drawing.Size(125, 15);
+            captureCanvasWidthLabel.TabIndex = 35;
+            captureCanvasWidthLabel.Text = "Capture Canvas Width";
             // 
             // canvasWidthTextBox
             // 
-            canvasWidthTextBox.Location = new System.Drawing.Point(4, 284);
+            canvasWidthTextBox.Location = new System.Drawing.Point(9, 284);
             canvasWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             canvasWidthTextBox.Name = "canvasWidthTextBox";
             canvasWidthTextBox.Size = new System.Drawing.Size(116, 23);
@@ -245,19 +245,19 @@
             canvasWidthTextBox.Text = "160";
             canvasWidthTextBox.TextChanged += canvasWidthTextBox_TextChanged;
             // 
-            // canvasHeightLabel
+            // captureCanvasHeightLabel
             // 
-            canvasHeightLabel.AutoSize = true;
-            canvasHeightLabel.Location = new System.Drawing.Point(9, 322);
-            canvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            canvasHeightLabel.Name = "canvasHeightLabel";
-            canvasHeightLabel.Size = new System.Drawing.Size(84, 15);
-            canvasHeightLabel.TabIndex = 33;
-            canvasHeightLabel.Text = "Canvas Height";
+            captureCanvasHeightLabel.AutoSize = true;
+            captureCanvasHeightLabel.Location = new System.Drawing.Point(9, 322);
+            captureCanvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            captureCanvasHeightLabel.Name = "captureCanvasHeightLabel";
+            captureCanvasHeightLabel.Size = new System.Drawing.Size(129, 15);
+            captureCanvasHeightLabel.TabIndex = 33;
+            captureCanvasHeightLabel.Text = "Capture Canvas Height";
             // 
             // canvasHeightTextBox
             // 
-            canvasHeightTextBox.Location = new System.Drawing.Point(4, 344);
+            canvasHeightTextBox.Location = new System.Drawing.Point(9, 340);
             canvasHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             canvasHeightTextBox.Name = "canvasHeightTextBox";
             canvasHeightTextBox.Size = new System.Drawing.Size(116, 23);
@@ -358,7 +358,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(149, 400);
+            label7.Location = new System.Drawing.Point(173, 400);
             label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(86, 15);
@@ -556,9 +556,9 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox borderWidthTextBox;
-        private System.Windows.Forms.Label canvasWidthLabel;
+        private System.Windows.Forms.Label captureCanvasWidthLabel;
         private System.Windows.Forms.TextBox canvasWidthTextBox;
-        private System.Windows.Forms.Label canvasHeightLabel;
+        private System.Windows.Forms.Label captureCanvasHeightLabel;
         private System.Windows.Forms.TextBox canvasHeightTextBox;
         private System.Windows.Forms.ComboBox consolePresetComboBox;
         private System.Windows.Forms.Label label13;

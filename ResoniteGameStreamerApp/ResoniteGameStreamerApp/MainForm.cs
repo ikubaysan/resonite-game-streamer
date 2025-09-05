@@ -270,12 +270,21 @@ namespace ResoniteGameStreamerApp
         private void consolePresetComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedValue = consolePresetComboBox.SelectedItem.ToString();
-            if (selectedValue == "Greyscale")
+            if (selectedValue == "Gameboy")
             {
                 targetWindowTextBox.Text = "mGBA";
                 canvasWidthTextBox.Text = "160";
                 canvasHeightTextBox.Text = "144";
             }
+
+            if (selectedValue == "Doom")
+            {
+                targetWindowTextBox.Text = "Chocolate Doom";
+                canvasWidthTextBox.Text = "320";
+                canvasHeightTextBox.Text = "200";
+            }
+
+
         }
 
         private void colorModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
