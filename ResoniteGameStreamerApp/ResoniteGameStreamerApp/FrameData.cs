@@ -26,6 +26,7 @@ namespace ResoniteGameStreamerApp
         private static Dictionary<int, int> rowExpansionAmounts;
         private static List<int> contiguousRangePairs;
         private static Dictionary<int, List<Color>> cachedRowPixels;
+        public static int LastGeneratedChangedPixelsCount { get; private set; }
 
         public static ColorMode ActiveColorMode = ColorMode.GREYSCALE; // default
 
@@ -238,6 +239,7 @@ namespace ResoniteGameStreamerApp
 
             List<int> pixelDataList = new List<int>();
             rgbToSpans = new Dictionary<int, List<int>>();
+            LastGeneratedChangedPixelsCount = 0;
 
             // Diff against cached (also emitted-sized)
             BitmapData currentBmpData = emitBmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, emitBmp.PixelFormat);
@@ -269,6 +271,9 @@ namespace ResoniteGameStreamerApp
                             spanStart = x;
                             x = IdentifySpanRgb(currentBmpBytes, x, y, stride, width, bytesPerPixel, cur);
                             int spanLength = x - spanStart;
+
+                            LastGeneratedChangedPixelsCount += spanLength;
+
                             int packedXYZ = PackXYZ(spanStart, y, spanLength);
                             StoreSpanRgb(rgbToSpans, cur, packedXYZ);
                         }
@@ -284,6 +289,9 @@ namespace ResoniteGameStreamerApp
                             spanStart = x;
                             x = IdentifySpanGb(currentBmpBytes, x, y, stride, width, bytesPerPixel, curIdx);
                             int spanLength = x - spanStart;
+
+                            LastGeneratedChangedPixelsCount += spanLength;
+
                             int packedXYZ = PackXYZ(spanStart, y, spanLength);
                             StoreSpanGb(rgbToSpans, curIdx, packedXYZ);
                         }

@@ -179,7 +179,6 @@ namespace ResoniteGameStreamerApp
                 brightnessFactor,
                 darkenFactor);
 
-
             if (pixelData == null) return;
 
             MemoryMappedFileManager.WritePixelDataToMemoryMappedFile(
@@ -198,25 +197,30 @@ namespace ResoniteGameStreamerApp
 
             if (MemoryMappedFileManager.readPixelDataLength >= 0)
             {
-                var now = DateTime.Now;
-                _avgFpsWindow.Enqueue(now);
+                _avgFpsWindow.Enqueue(DateTime.Now);
             }
 
+            // If preview is enabled, decode+draw now so latestPreviewPixelsChangedCount is up-to-date.
             if (previewCheckBox.Checked)
             {
                 pictureBox1.Image = FrameData.SetPixelDataToBitmap();
-                previewPixelsChangedCountLabel.Text = latestPreviewPixelsChangedCount.ToString();
+            }
 
-                int currentOffset = MemoryMappedFileManager.latestReceivedFrameMillisecondsOffset;
-                if (currentOffset != _lastPixelsOffsetCounted && MemoryMappedFileManager.readPixelDataLength != -1)
-                {
-                    var now = DateTime.Now;
-                    int px = latestPreviewPixelsChangedCount;
+            // Count pixels for this frame regardless of preview state (no extra pass).
+            int currentOffset = MemoryMappedFileManager.latestReceivedFrameMillisecondsOffset;
+            if (currentOffset != _lastPixelsOffsetCounted && MemoryMappedFileManager.readPixelDataLength != -1)
+            {
+                int px = previewCheckBox.Checked
+                    ? latestPreviewPixelsChangedCount                 // set by SetPixelDataToBitmap()
+                    : FrameData.LastGeneratedChangedPixelsCount;      // tallied during span generation
 
-                    _avgPixelsWindow.Enqueue((now, px));
-                    _avgPixelsSum += px;
-                    _lastPixelsOffsetCounted = currentOffset;
-                }
+                // Keep UI/rolling stats updated even with preview off
+                previewPixelsChangedCountLabel.Text = px.ToString();
+                latestPreviewPixelsChangedCount = px;
+
+                _avgPixelsWindow.Enqueue((DateTime.Now, px));
+                _avgPixelsSum += px;
+                _lastPixelsOffsetCounted = currentOffset;
             }
 
             if (checkBox4.Checked)
@@ -230,6 +234,7 @@ namespace ResoniteGameStreamerApp
             _timer.Interval = Math.Max(1, (int)((1.0 / TargetFramerate) * 1000) - (int)executionTime);
             _lastTickTime = endTickTime;
         }
+
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
