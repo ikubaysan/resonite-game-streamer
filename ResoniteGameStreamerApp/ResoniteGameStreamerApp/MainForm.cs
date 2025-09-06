@@ -35,8 +35,11 @@ namespace ResoniteGameStreamerApp
         public static double brightnessFactor = 1.0;
         public double darkenFactor = 0.0;
         public string targetWindowTitle = "mGBA";
-        private int titleBarHeight = 30;
-        private int borderWidth = 8;
+        
+        private int cropTop = 0;
+        private int cropBottom = 0;
+        private int cropRight = 0;
+        private int cropLeft = 0;
 
         private int _frameCounter = 0;
         private Timer _fpsTimer;
@@ -76,9 +79,12 @@ namespace ResoniteGameStreamerApp
 
             TargetFramerate = _settings.TargetFramerate;
             targetWindowTitle = _settings.TargetWindowTitle ?? "mGBA";
-            borderWidth = _settings.BorderWidth;
-            titleBarHeight = _settings.TitleBarHeight;
             fullFrameInterval = Math.Max(1, _settings.FullFrameIntervalSeconds) * 1000;
+
+            cropTop = Math.Max(0, _settings.CropTop);
+            cropBottom = Math.Max(0, _settings.CropBottom);
+            cropRight = Math.Max(0, _settings.CropRight);
+            cropLeft = Math.Max(0, _settings.CropLeft);
 
             // Now reflect into controls, but suppress event handlers while we do it
             _isRestoringSettings = true;
@@ -91,10 +97,11 @@ namespace ResoniteGameStreamerApp
 
             if (targetFramerateTextBox != null) targetFramerateTextBox.Text = _settings.TargetFramerate.ToString();
             if (targetWindowTextBox != null) targetWindowTextBox.Text = _settings.TargetWindowTitle;
-            if (borderWidthTextBox != null) borderWidthTextBox.Text = _settings.BorderWidth.ToString();
 
-            // BUGFIX: you had `if (titleBarHeight != null)` comparing an int to null
-            if (titleBarHeightTextBox != null) titleBarHeightTextBox.Text = _settings.TitleBarHeight.ToString();
+            if (cropTopTextBox != null) cropTopTextBox.Text = cropTop.ToString();
+            if (cropBottomTextBox != null) cropBottomTextBox.Text = cropBottom.ToString();
+            if (cropLeftTextBox != null) cropLeftTextBox.Text = cropLeft.ToString();
+            if (cropRightTextBox != null) cropRightTextBox.Text = cropRight.ToString();
 
             if (fullFrameIntervalTextBox != null)
                 fullFrameIntervalTextBox.Text = _settings.FullFrameIntervalSeconds.ToString();
@@ -171,8 +178,10 @@ namespace ResoniteGameStreamerApp
 
             var (pixelData, contiguousRangePairs) = FrameData.GeneratePixelDataFromWindow(
                 targetWindowTitle,
-                borderWidth,
-                titleBarHeight,
+                cropTop,
+                cropBottom, 
+                cropRight, 
+                cropLeft,
                 EMITTED_WIDTH, EMITTED_HEIGHT,
                 forceFullFrame,
                 rowExpansionCheckBox.Checked,
@@ -307,17 +316,6 @@ namespace ResoniteGameStreamerApp
 
                 // persist in seconds
                 _settings.FullFrameIntervalSeconds = seconds;
-                SettingsManager.Save(_settings);
-            }
-        }
-
-        private void borderWidthTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (_isRestoringSettings) return;
-            if (int.TryParse(borderWidthTextBox.Text, out int selectedBorderWidth))
-            {
-                borderWidth = selectedBorderWidth;
-                _settings.BorderWidth = borderWidth;
                 SettingsManager.Save(_settings);
             }
         }
@@ -490,5 +488,50 @@ namespace ResoniteGameStreamerApp
             InitializeCanvas();
         }
 
+        private void cropTopTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (_isRestoringSettings) return;
+            if (int.TryParse(cropTopTextBox.Text, out int selectedCropTop))
+            {
+                cropTop = selectedCropTop;
+                _settings.CropTop = selectedCropTop;
+                SettingsManager.Save(_settings);
+            }
+        }
+
+        private void cropBottomTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (_isRestoringSettings) return;
+            if (int.TryParse(cropBottomTextBox.Text, out int selectedCropBottom))
+            {
+                cropBottom = selectedCropBottom;
+                _settings.CropBottom = selectedCropBottom;
+                SettingsManager.Save(_settings);
+            }
+        }
+
+        private void cropRightTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (_isRestoringSettings) return;
+            if (int.TryParse(cropRightTextBox.Text, out int selectedCropRight))
+            {
+                cropRight = selectedCropRight;
+                _settings.CropRight = selectedCropRight;
+                SettingsManager.Save(_settings);
+            }
+
+        }
+
+        private void cropLeftTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (_isRestoringSettings) return;
+            if (int.TryParse(cropLeftTextBox.Text, out int selectedCropLeft))
+            {
+                cropLeft = selectedCropLeft;
+                _settings.CropLeft = selectedCropLeft;
+                SettingsManager.Save(_settings);
+            }
+
+        } 
     }
 }

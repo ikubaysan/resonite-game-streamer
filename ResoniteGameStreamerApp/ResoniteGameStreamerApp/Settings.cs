@@ -11,7 +11,10 @@ namespace ResoniteGameStreamerApp
         public int TargetFramerate { get; set; } = 36;
         public string TargetWindowTitle { get; set; } = "mGBA";
         public string ColorMode { get; set; } = "RGB"; // "RGB" or "Greyscale"
-        public int BorderWidth { get; set; } = 8;
+        public int CropTop { get; set; } = 0;
+        public int CropBottom { get; set; } = 0;
+        public int CropRight { get; set; } = 0;
+        public int CropLeft { get; set; } = 0;
         public int TitleBarHeight { get; set; } = 30;
         public int FullFrameIntervalSeconds { get; set; } = 30;
 

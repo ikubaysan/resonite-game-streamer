@@ -132,7 +132,7 @@ namespace ResoniteGameStreamerApp
             list.Add(packedXYZ);
         }
 
-        private static Bitmap CaptureWindow(string targetWindowTitle, int borderWidth, int titleBarHeight, double brightnessFactor, double darkenFactor)
+        private static Bitmap CaptureWindow(string targetWindowTitle, int cropTop, int cropBottom, int cropRight, int cropLeft, double brightnessFactor, double darkenFactor)
         {
             IntPtr hWnd = IntPtr.Zero;
             NativeMethods.RECT rect = new NativeMethods.RECT { Top = 0, Left = 0, Right = 0, Bottom = 0 };
@@ -154,10 +154,11 @@ namespace ResoniteGameStreamerApp
 
             if (!cachedRectSet) NativeMethods.GetWindowRect(hWnd, out rect);
 
-            int adjustedTop = rect.Top + titleBarHeight;
-            int adjustedLeft = rect.Left + borderWidth;
-            int adjustedRight = rect.Right - borderWidth;
-            int adjustedBottom = rect.Bottom;
+            int adjustedTop = rect.Top + cropTop;        // move top edge down
+            int adjustedLeft = rect.Left + cropLeft;     // move left edge right
+            int adjustedRight = rect.Right - cropRight;  // move right edge left
+            int adjustedBottom = rect.Bottom - cropBottom; // move bottom edge up
+
 
             int width = adjustedRight - adjustedLeft;
             int height = adjustedBottom - adjustedTop;
@@ -202,15 +203,21 @@ namespace ResoniteGameStreamerApp
         // -------------- Generate (mode-aware, emitted-sized) --------------
         public static (List<int>, List<int>) GeneratePixelDataFromWindow(
             string targetWindowTitle,
-            int borderWidth,
-            int titleBarHeight,
-            int width, int height,
+            int cropTop,
+            int cropBottom, 
+            int cropRight, 
+            int cropLeft,
+            int width, 
+            int height,
             bool forceFullFrame,
             bool rowExpansionEnabled,
             double brightnessFactor,
             double darkenFactor)
         {
-            Bitmap captured = CaptureWindow(targetWindowTitle, borderWidth, titleBarHeight, brightnessFactor, darkenFactor);
+            //Bitmap captured = CaptureWindow(targetWindowTitle, borderWidth, titleBarHeight, brightnessFactor, darkenFactor);
+            Bitmap captured = CaptureWindow(targetWindowTitle, cropTop, cropBottom, cropRight, cropLeft, brightnessFactor, darkenFactor);
+
+
             if (captured == null) return (null, null);
 
             // If capture == emitted size, reuse the capture; otherwise scale once.

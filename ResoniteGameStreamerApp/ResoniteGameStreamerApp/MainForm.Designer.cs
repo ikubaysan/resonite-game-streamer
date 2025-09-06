@@ -36,6 +36,12 @@
             pictureBox1 = new System.Windows.Forms.PictureBox();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            label15 = new System.Windows.Forms.Label();
+            cropBottomTextBox = new System.Windows.Forms.TextBox();
+            label17 = new System.Windows.Forms.Label();
+            cropTopTextBox = new System.Windows.Forms.TextBox();
+            label5 = new System.Windows.Forms.Label();
+            cropLeftTextBox = new System.Windows.Forms.TextBox();
             avgPixelsLabel = new System.Windows.Forms.Label();
             label16 = new System.Windows.Forms.Label();
             avgFPSLabel = new System.Windows.Forms.Label();
@@ -56,14 +62,12 @@
             captureCanvasHeightLabel = new System.Windows.Forms.Label();
             canvasHeightTextBox = new System.Windows.Forms.TextBox();
             label11 = new System.Windows.Forms.Label();
-            borderWidthTextBox = new System.Windows.Forms.TextBox();
+            cropRightTextBox = new System.Windows.Forms.TextBox();
             previewPixelsChangedCountLabel = new System.Windows.Forms.Label();
             label12 = new System.Windows.Forms.Label();
             rowExpansionCheckBox = new System.Windows.Forms.CheckBox();
             publishedFPSLabel = new System.Windows.Forms.Label();
             label10 = new System.Windows.Forms.Label();
-            label9 = new System.Windows.Forms.Label();
-            titleBarHeightTextBox = new System.Windows.Forms.TextBox();
             label7 = new System.Windows.Forms.Label();
             previewCheckBox = new System.Windows.Forms.CheckBox();
             label8 = new System.Windows.Forms.Label();
@@ -86,7 +90,7 @@
             // 
             // targetWindowTextBox
             // 
-            targetWindowTextBox.Location = new System.Drawing.Point(223, 449);
+            targetWindowTextBox.Location = new System.Drawing.Point(314, 452);
             targetWindowTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             targetWindowTextBox.Name = "targetWindowTextBox";
             targetWindowTextBox.Size = new System.Drawing.Size(116, 23);
@@ -119,7 +123,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new System.Drawing.Point(682, 74);
+            pictureBox1.Location = new System.Drawing.Point(681, 77);
             pictureBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(299, 277);
@@ -134,11 +138,17 @@
             tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1030, 524);
+            tabControl1.Size = new System.Drawing.Size(1082, 534);
             tabControl1.TabIndex = 6;
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(label15);
+            tabPage1.Controls.Add(cropBottomTextBox);
+            tabPage1.Controls.Add(label17);
+            tabPage1.Controls.Add(cropTopTextBox);
+            tabPage1.Controls.Add(label5);
+            tabPage1.Controls.Add(cropLeftTextBox);
             tabPage1.Controls.Add(avgPixelsLabel);
             tabPage1.Controls.Add(label16);
             tabPage1.Controls.Add(avgFPSLabel);
@@ -159,14 +169,12 @@
             tabPage1.Controls.Add(captureCanvasHeightLabel);
             tabPage1.Controls.Add(canvasHeightTextBox);
             tabPage1.Controls.Add(label11);
-            tabPage1.Controls.Add(borderWidthTextBox);
+            tabPage1.Controls.Add(cropRightTextBox);
             tabPage1.Controls.Add(previewPixelsChangedCountLabel);
             tabPage1.Controls.Add(label12);
             tabPage1.Controls.Add(rowExpansionCheckBox);
             tabPage1.Controls.Add(publishedFPSLabel);
             tabPage1.Controls.Add(label10);
-            tabPage1.Controls.Add(label9);
-            tabPage1.Controls.Add(titleBarHeightTextBox);
             tabPage1.Controls.Add(label7);
             tabPage1.Controls.Add(previewCheckBox);
             tabPage1.Controls.Add(label8);
@@ -189,11 +197,71 @@
             tabPage1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tabPage1.Size = new System.Drawing.Size(1022, 496);
+            tabPage1.Size = new System.Drawing.Size(1074, 506);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "tabPage1";
             tabPage1.UseVisualStyleBackColor = true;
             tabPage1.Click += tabPage1_Click;
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new System.Drawing.Point(167, 438);
+            label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label15.Name = "label15";
+            label15.Size = new System.Drawing.Size(76, 15);
+            label15.TabIndex = 56;
+            label15.Text = "Crop Bottom";
+            // 
+            // cropBottomTextBox
+            // 
+            cropBottomTextBox.Location = new System.Drawing.Point(161, 456);
+            cropBottomTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cropBottomTextBox.Name = "cropBottomTextBox";
+            cropBottomTextBox.Size = new System.Drawing.Size(88, 23);
+            cropBottomTextBox.TabIndex = 55;
+            cropBottomTextBox.Text = "8";
+            cropBottomTextBox.TextChanged += cropBottomTextBox_TextChanged;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new System.Drawing.Point(167, 390);
+            label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label17.Name = "label17";
+            label17.Size = new System.Drawing.Size(55, 15);
+            label17.TabIndex = 54;
+            label17.Text = "Crop Top";
+            // 
+            // cropTopTextBox
+            // 
+            cropTopTextBox.Location = new System.Drawing.Point(167, 408);
+            cropTopTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cropTopTextBox.Name = "cropTopTextBox";
+            cropTopTextBox.Size = new System.Drawing.Size(88, 23);
+            cropTopTextBox.TabIndex = 53;
+            cropTopTextBox.Text = "8";
+            cropTopTextBox.TextChanged += cropTopTextBox_TextChanged;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(167, 329);
+            label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(56, 15);
+            label5.TabIndex = 52;
+            label5.Text = "Crop Left";
+            // 
+            // cropLeftTextBox
+            // 
+            cropLeftTextBox.Location = new System.Drawing.Point(161, 347);
+            cropLeftTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cropLeftTextBox.Name = "cropLeftTextBox";
+            cropLeftTextBox.Size = new System.Drawing.Size(88, 23);
+            cropLeftTextBox.TabIndex = 51;
+            cropLeftTextBox.Text = "8";
+            cropLeftTextBox.TextChanged += cropLeftTextBox_TextChanged;
             // 
             // avgPixelsLabel
             // 
@@ -268,7 +336,7 @@
             // emittedCanvasWidthLabel
             // 
             emittedCanvasWidthLabel.AutoSize = true;
-            emittedCanvasWidthLabel.Location = new System.Drawing.Point(214, 269);
+            emittedCanvasWidthLabel.Location = new System.Drawing.Point(305, 272);
             emittedCanvasWidthLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             emittedCanvasWidthLabel.Name = "emittedCanvasWidthLabel";
             emittedCanvasWidthLabel.Size = new System.Drawing.Size(124, 15);
@@ -277,7 +345,7 @@
             // 
             // emittedCanvasWidthTextBox
             // 
-            emittedCanvasWidthTextBox.Location = new System.Drawing.Point(214, 291);
+            emittedCanvasWidthTextBox.Location = new System.Drawing.Point(305, 294);
             emittedCanvasWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             emittedCanvasWidthTextBox.Name = "emittedCanvasWidthTextBox";
             emittedCanvasWidthTextBox.Size = new System.Drawing.Size(116, 23);
@@ -288,7 +356,7 @@
             // emittedCanvasHeightLabel
             // 
             emittedCanvasHeightLabel.AutoSize = true;
-            emittedCanvasHeightLabel.Location = new System.Drawing.Point(214, 329);
+            emittedCanvasHeightLabel.Location = new System.Drawing.Point(305, 332);
             emittedCanvasHeightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             emittedCanvasHeightLabel.Name = "emittedCanvasHeightLabel";
             emittedCanvasHeightLabel.Size = new System.Drawing.Size(128, 15);
@@ -297,7 +365,7 @@
             // 
             // emittedCanvasHeightTextBox
             // 
-            emittedCanvasHeightTextBox.Location = new System.Drawing.Point(214, 347);
+            emittedCanvasHeightTextBox.Location = new System.Drawing.Point(305, 350);
             emittedCanvasHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             emittedCanvasHeightTextBox.Name = "emittedCanvasHeightTextBox";
             emittedCanvasHeightTextBox.Size = new System.Drawing.Size(116, 23);
@@ -308,7 +376,7 @@
             // colorModeLabel
             // 
             colorModeLabel.AutoSize = true;
-            colorModeLabel.Location = new System.Drawing.Point(874, 420);
+            colorModeLabel.Location = new System.Drawing.Point(873, 423);
             colorModeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             colorModeLabel.Name = "colorModeLabel";
             colorModeLabel.Size = new System.Drawing.Size(70, 15);
@@ -319,7 +387,7 @@
             // 
             colorModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             colorModeComboBox.FormattingEnabled = true;
-            colorModeComboBox.Location = new System.Drawing.Point(841, 453);
+            colorModeComboBox.Location = new System.Drawing.Point(840, 456);
             colorModeComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             colorModeComboBox.Name = "colorModeComboBox";
             colorModeComboBox.Size = new System.Drawing.Size(140, 23);
@@ -390,22 +458,22 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(434, 213);
+            label11.Location = new System.Drawing.Point(167, 273);
             label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label11.Name = "label11";
-            label11.Size = new System.Drawing.Size(77, 15);
+            label11.Size = new System.Drawing.Size(64, 15);
             label11.TabIndex = 31;
-            label11.Text = "Border Width";
+            label11.Text = "Crop Right";
             // 
-            // borderWidthTextBox
+            // cropRightTextBox
             // 
-            borderWidthTextBox.Location = new System.Drawing.Point(428, 231);
-            borderWidthTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            borderWidthTextBox.Name = "borderWidthTextBox";
-            borderWidthTextBox.Size = new System.Drawing.Size(116, 23);
-            borderWidthTextBox.TabIndex = 30;
-            borderWidthTextBox.Text = "8";
-            borderWidthTextBox.TextChanged += borderWidthTextBox_TextChanged;
+            cropRightTextBox.Location = new System.Drawing.Point(161, 291);
+            cropRightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cropRightTextBox.Name = "cropRightTextBox";
+            cropRightTextBox.Size = new System.Drawing.Size(88, 23);
+            cropRightTextBox.TabIndex = 30;
+            cropRightTextBox.Text = "8";
+            cropRightTextBox.TextChanged += cropRightTextBox_TextChanged;
             // 
             // previewPixelsChangedCountLabel
             // 
@@ -458,29 +526,10 @@
             label10.TabIndex = 25;
             label10.Text = "Published FPS:";
             // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new System.Drawing.Point(428, 269);
-            label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            label9.Name = "label9";
-            label9.Size = new System.Drawing.Size(88, 15);
-            label9.TabIndex = 24;
-            label9.Text = "Title Bar Height";
-            // 
-            // titleBarHeightTextBox
-            // 
-            titleBarHeightTextBox.Location = new System.Drawing.Point(424, 291);
-            titleBarHeightTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            titleBarHeightTextBox.Name = "titleBarHeightTextBox";
-            titleBarHeightTextBox.Size = new System.Drawing.Size(116, 23);
-            titleBarHeightTextBox.TabIndex = 23;
-            titleBarHeightTextBox.Text = "30";
-            // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(230, 416);
+            label7.Location = new System.Drawing.Point(321, 419);
             label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(86, 15);
@@ -492,7 +541,7 @@
             previewCheckBox.AutoSize = true;
             previewCheckBox.Checked = true;
             previewCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            previewCheckBox.Location = new System.Drawing.Point(876, 377);
+            previewCheckBox.Location = new System.Drawing.Point(875, 380);
             previewCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             previewCheckBox.Name = "previewCheckBox";
             previewCheckBox.Size = new System.Drawing.Size(68, 34);
@@ -503,7 +552,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(406, 329);
+            label8.Location = new System.Drawing.Point(462, 328);
             label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(158, 15);
@@ -512,7 +561,7 @@
             // 
             // fullFrameIntervalTextBox
             // 
-            fullFrameIntervalTextBox.Location = new System.Drawing.Point(424, 347);
+            fullFrameIntervalTextBox.Location = new System.Drawing.Point(480, 346);
             fullFrameIntervalTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             fullFrameIntervalTextBox.Name = "fullFrameIntervalTextBox";
             fullFrameIntervalTextBox.Size = new System.Drawing.Size(116, 23);
@@ -547,7 +596,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(425, 420);
+            label6.Location = new System.Drawing.Point(481, 419);
             label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(95, 15);
@@ -556,7 +605,7 @@
             // 
             // targetFramerateTextBox
             // 
-            targetFramerateTextBox.Location = new System.Drawing.Point(428, 453);
+            targetFramerateTextBox.Location = new System.Drawing.Point(484, 452);
             targetFramerateTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             targetFramerateTextBox.Name = "targetFramerateTextBox";
             targetFramerateTextBox.Size = new System.Drawing.Size(116, 23);
@@ -567,7 +616,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(715, 420);
+            label4.Location = new System.Drawing.Point(714, 423);
             label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(62, 15);
@@ -576,7 +625,7 @@
             // 
             // brightnessTextBox
             // 
-            brightnessTextBox.Location = new System.Drawing.Point(694, 453);
+            brightnessTextBox.Location = new System.Drawing.Point(693, 456);
             brightnessTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             brightnessTextBox.Name = "brightnessTextBox";
             brightnessTextBox.Size = new System.Drawing.Size(116, 23);
@@ -597,7 +646,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new System.Drawing.Point(715, 377);
+            checkBox1.Location = new System.Drawing.Point(714, 380);
             checkBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new System.Drawing.Size(68, 34);
@@ -608,7 +657,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(785, 22);
+            label2.Location = new System.Drawing.Point(784, 25);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(92, 15);
@@ -631,7 +680,7 @@
             tabPage2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tabPage2.Size = new System.Drawing.Size(1022, 496);
+            tabPage2.Size = new System.Drawing.Size(1074, 506);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
@@ -640,7 +689,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1037, 532);
+            ClientSize = new System.Drawing.Size(1088, 537);
             Controls.Add(tabControl1);
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "MainForm";
@@ -678,15 +727,13 @@
         private System.Windows.Forms.TextBox fullFrameIntervalTextBox;
         private System.Windows.Forms.CheckBox previewCheckBox;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox titleBarHeightTextBox;
         private System.Windows.Forms.Label publishedFPSLabel;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.CheckBox rowExpansionCheckBox;
         private System.Windows.Forms.Label previewPixelsChangedCountLabel;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox borderWidthTextBox;
+        private System.Windows.Forms.TextBox cropRightTextBox;
         private System.Windows.Forms.Label captureCanvasWidthLabel;
         private System.Windows.Forms.TextBox canvasWidthTextBox;
         private System.Windows.Forms.Label captureCanvasHeightLabel;
@@ -707,6 +754,12 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label avgPixelsLabel;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox cropBottomTextBox;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox cropTopTextBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox cropLeftTextBox;
     }
 }
 
